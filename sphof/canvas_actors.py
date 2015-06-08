@@ -11,8 +11,25 @@ from sys import getrefcount as grc
 import ctypes
 logger = logging.getLogger(__name__)
 
+"""
+.. module:: canvas_actors
+   :platform: Unix, Windows
+   :synopsis: A module for drawing on a canvas using ZOCP.
+
+.. moduleauthor:: Arnaud Loonstra <arnaud@sphaero.org>
+"""
+
 class LazyCanvasActor(ZOCP):
 
+    """We use this as a public class example class.
+
+    You never call this class before calling :func:`public_fn_with_sphinxy_docstring`.
+
+    .. note::
+
+       An example of intersphinx is this: you **cannot** use :mod:`pickle` on this class.
+
+    """
     def __init__(self, *args, **kwargs):
         super(LazyCanvasActor, self).__init__(*args, **kwargs)
         if kwargs.get("imagefile"):
@@ -230,15 +247,14 @@ class LazyCanvasActor(ZOCP):
                 timeout = reap_at - time.time()
                 if timeout < 0:
                     timeout = 0
-                self.run_once(timeout * 1000)
+                self.run_once(0) #timeout * 1000)
                 reap_at = time.time() + 1/60.
 
                 self.update()
                 self.draw()
                 count += 1
-                if not count % 60:
-                    print(self._img.size)
-                    print("fps: {0}".format(1/((time.time() - t)/count)))
+                if t + 60 < time.time():
+                    print("{0}: fps: {1}".format(self.name, count/((time.time() - t))))
                     t = time.time()
                     count = 0
         except Exception as e:
@@ -248,10 +264,18 @@ class LazyCanvasActor(ZOCP):
 
 class CanvasActor(ZOCP):
 
+    """Canvas Actor class, threaded version.
+
+    .. note::
+
+       An example of intersphinx is this: you **cannot** use :mod:`pickle` on this class.
+
+    """
+
     def __init__(self, *args, **kwargs):
         super(CanvasActor, self).__init__(*args, **kwargs)
 
-        self.count = 0
+        self._count = 0  #fps counter
         self._img = None
         self._oldimg = {} #[None]*10
         self.background_color = (15,15,15)
@@ -471,14 +495,13 @@ class CanvasActor(ZOCP):
         self.stop()
 
     def _pre_update(self):
-        pass
+        self._count += 1
         
     def _post_update(self):
         pass
 
     def run(self):
         self._running = True
-        count = 0
         t = time.time()
         try:
             reap_at = time.time() + 1/120.
@@ -486,7 +509,7 @@ class CanvasActor(ZOCP):
                 timeout = reap_at - time.time()
                 if timeout < 0:
                     timeout = 0
-                self.run_once(0)#timeout * 1000)
+                self.run_once(timeout * 1000)
                 # set next interval
                 reap_at = time.time() + 1/120.
  
@@ -495,11 +518,10 @@ class CanvasActor(ZOCP):
                 self._post_update()
  
                 # stats
-                count += 1
-                if not count % 60:
-                    print("fps: {0}".format(1/((time.time() - t)/count)))
+                if t + 1 < time.time():
+                    print("{0}: fps: {1}".format(self.name(), 1/((time.time() - t)/self._count)))
                     t = time.time()
-                    count = 0
+                    self._count = 0
         except KeyboardInterrupt as e:
             print("Exception: ZCanvas_t:{0}".format(e))
         finally:
