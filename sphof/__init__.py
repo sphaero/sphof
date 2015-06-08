@@ -1,3 +1,5 @@
+#!/usr/bin/python 
+# -*- coding: utf-8 -*-
 __all__ = ['sphof.canvas_actors']
 #__all__ = ['pyre', 'zbeacon', 'zhelper']
 
