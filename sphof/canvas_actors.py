@@ -37,14 +37,15 @@ class LazyCanvasActor(ZOCP):
         """
         Called a startup.
         
-        Add variables here:
-        i.e.
-        
-        self.count = 0
-        
-        and in update()
-        
-        count += 1
+        Add variables here
+        i.e.::
+
+            self.count = 0
+
+        and in update()::
+
+            count += 1
+
         """
         logger.warning("Please implement a setup method!!!")
 
@@ -140,7 +141,7 @@ class LazyCanvasActor(ZOCP):
                    numeric values like ``[x, y, x, y, ...]``.
         :param fill: Color to use for the line.
         :param width: The line width, in pixels. Note that line
-        joins are not handled well, so wide polylines will not look good.        
+               joins are not handled well, so wide polylines will not look good.        
         """
         self._d.line(*args, **kwargs)
 
@@ -269,11 +270,15 @@ class CanvasActor(ZOCP):
         """
         Called a startup.
         
-        Add variables here:
-        i.e.
-        self.count = 0
-        and in update()
-        count += 1
+        Add variables here
+        i.e.::
+
+            self.count = 0
+
+        and in update()::
+
+            count += 1
+
         """
         logger.warning("Please implement a setup method!!!")
 
@@ -366,7 +371,7 @@ class CanvasActor(ZOCP):
                    numeric values like ``[x, y, x, y, ...]``.
         :param fill: Color to use for the line.
         :param width: The line width, in pixels. Note that line
-        joins are not handled well, so wide polylines will not look good.        
+            joins are not handled well, so wide polylines will not look good.        
         """
         self._d.line(*args, **kwargs)
 
