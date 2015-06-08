@@ -86,24 +86,32 @@ class Painters(ZOCP):
             img = ctypes.cast(imgID, ctypes.py_object).value
             #self._orig_images[0] = img
             self._images[0] = ImageTk.PhotoImage(img)
+            self.canvas.create_image(0, 0, image=self._images[0], anchor='nw')
+            self.draw()
             self.emit_signal("id1", imgID)
         elif name == "Thread2":
             imgID = data[1]
             img = ctypes.cast(imgID, ctypes.py_object).value
             #self._orig_images[1] = img
             self._images[1] = ImageTk.PhotoImage(img)
+            self.canvas.create_image(200, 0, image=self._images[1], anchor='nw')
+            self.draw()
             self.emit_signal("id2", imgID)
         elif name == "Thread3":
             imgID = data[1]
             img = ctypes.cast(imgID, ctypes.py_object).value
             #self._orig_images[2] = img
             self._images[2] = ImageTk.PhotoImage(img)
+            self.canvas.create_image(2*200, 0, image=self._images[2], anchor='nw')
+            self.draw()
             self.emit_signal("id3", imgID)
         elif name == "Thread4":
             imgID = data[1]
             img = ctypes.cast(imgID, ctypes.py_object).value
             #self._orig_images[3] = img
             self._images[3] = ImageTk.PhotoImage(img)
+            self.canvas.create_image(3*200, 0, image=self._images[3], anchor='nw')
+            self.draw()
             self.emit_signal("id4", imgID)
 
     def update(self):
@@ -122,15 +130,17 @@ class Painters(ZOCP):
         self._running = True
         t = time.time()
         try:
-            reap_at = time.time() + 10/10.
+            reap_at = time.time() + 1/60.
             while self._running:
                 timeout = reap_at - time.time()
                 if timeout < 0:
                     timeout = 0
+                print("BOE")
                 self.run_once(timeout * 1000)
-                reap_at = time.time() + 10/10.
+                reap_at = time.time() + 1/60.
                 
-                self.update()
+                #self.update()
+                print("NOE")
                 self.draw()
 
         except Exception as e:
