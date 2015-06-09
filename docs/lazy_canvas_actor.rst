@@ -1,6 +1,3 @@
-sphof package
-=============
-
 Lazy Canvas Actor class
 -----------------------
 

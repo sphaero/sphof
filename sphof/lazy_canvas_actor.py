@@ -32,20 +32,27 @@ class LazyCanvasActor(ZOCP):
         class MyPainter(LazyCanvasActor):
 
             def setup():
-                self.count = 0
+                self.count = 0                   # initialize counter
 
             def update():
-                self.count += 1
-                self.count = self.count % 50
+                self.count += 1                  # increment counter
+                self.count = self.count % 50     # counter bound
 
             def draw():
-                start = self.count
-                end = 100 - self.count
-                self.line(start, end, 2)
+                start = (self.count, self.count) # start position
+                end = (50, 100 - self.count)     # end position
+                color = (
+                        randint(70,110),         # red 
+                        randint(160,210),        # green
+                        randint(70,210)          # blue
+                        )
+                self.line(start, end, color, 2)  # draw line
 
-    This class has many method for drawing on a canvas, ie:
+    This class has many methods for drawing on a canvas, ie:
 
-    * :py:meth:`.LazyCanvasActor.line`
+    * :py:meth:`.line`
+    * :py:meth:`.rectangle`
+    * :py:meth:`.ellipse`
     * :py:meth:`.arc`
 
     Each class's method is documented below.

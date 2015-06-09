@@ -1,5 +1,5 @@
-sphof package
-=============
+.. toctree::
+   :maxdepth: 2
 
 Canvas Actor class
 -----------------------
