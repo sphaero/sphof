@@ -23,13 +23,35 @@ class LazyCanvasActor(ZOCP):
 
     """The LazyCanvasActors class provides simple methods for drawing on a canvas
 
-    Just inherit from this class and implement a setup, update and draw method
+    Just inherit from this class and implement a setup, update and draw method, i.e.:
 
-    .. note::
+    .. code-block:: python
 
-       This class is single threaded!
+        from sphof import LazyCanvasActor
+        
+        class MyPainter(LazyCanvasActor):
 
+            def setup():
+                self.count = 0
+
+            def update():
+                self.count += 1
+                self.count = self.count % 50
+
+            def draw():
+                start = self.count
+                end = 100 - self.count
+                self.line(start, end, 2)
+
+    This class has many method for drawing on a canvas, ie:
+
+    * :py:meth:`.LazyCanvasActor.line`
+    * :py:meth:`.arc`
+
+    Each class's method is documented below.
     """
+
+
     def __init__(self, *args, **kwargs):
         super(LazyCanvasActor, self).__init__(*args, **kwargs)
         if kwargs.get("imagefile"):

@@ -4,31 +4,20 @@
    contain the root `toctree` directive.
 
 Concurrency for Creative Coding 
-================================================
+===============================
 
 This is the documentation of a simple toolkit provided to research concurrent programming
 for Creative Coders. The toolkit is build upon the ZOCP framework.
 
 You can find the API documentation as well as simple examples of the toolkit's usage.
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
 
-sphof package
-=============
-
-Submodules
-----------
-
-sphof.canvas_actors module
---------------------------
-
-.. automodule:: sphof.canvas_actors
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   installation
+   guide
+   sphof
+   modules
 
 Indices and tables
 ==================
