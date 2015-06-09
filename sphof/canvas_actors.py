@@ -21,13 +21,13 @@ logger = logging.getLogger(__name__)
 
 class LazyCanvasActor(ZOCP):
 
-    """We use this as a public class example class.
+    """The LazyCanvasActors class provides simple methods for drawing on a canvas
 
-    You never call this class before calling :func:`public_fn_with_sphinxy_docstring`.
+    Just inherit from this class and implement a setup, update and draw method
 
     .. note::
 
-       An example of intersphinx is this: you **cannot** use :mod:`pickle` on this class.
+       This class is single threaded!
 
     """
     def __init__(self, *args, **kwargs):
@@ -264,11 +264,12 @@ class LazyCanvasActor(ZOCP):
 
 class CanvasActor(ZOCP):
 
-    """Canvas Actor class, threaded version.
+    """The CanvasActor class implements the same methods as the LazyActorClass. 
+       However it provides methods for multithreading by using multiple instances of this class.
 
     .. note::
 
-       An example of intersphinx is this: you **cannot** use :mod:`pickle` on this class.
+       Instead of drawing this class can only signal it has a new image.
 
     """
 
