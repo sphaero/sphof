@@ -16,7 +16,7 @@ You can find the API documentation as well as simple examples of the toolkit's u
 
    installation
    guide
-   sphof
+   lazy_canvas_actor
    modules
 
 Indices and tables
