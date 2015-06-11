@@ -1,5 +1,5 @@
 from random import randint
-from sphof.canvas_actors import CanvasActor
+from sphof import CanvasActor
 from PIL import Image, ImageDraw
 
 class MyPainter(CanvasActor):

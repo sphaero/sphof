@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageTk
 from zocp import ZOCP
 from sys import getrefcount as grc
 
-from sphof.canvas_actors import CanvasActor
+from sphof import CanvasActor
 from mypainter import MyPainter
 
 logger = logging.getLogger(__name__)
