@@ -12,9 +12,7 @@ class Philosopher(ZOCP):
     def __init__(self, *args, **kwargs):
         super(Philosopher, self).__init__(*args, **kwargs)
         self.topics = []                      # food for thought
-        self.register_string("fork1", "", "rs")
-        self.register_string("fork2", "", "rs")
-        self.register_string("state", "HUNGRY", "re")
+        self.setup()
         self.start()
         
         # run this actor in a thread
@@ -22,36 +20,38 @@ class Philosopher(ZOCP):
         self.thread.daemon = True
         self.thread.start()
     
+    def setup(self):
+        self.register_string("fork1", "", "rs")
+        self.register_string("fork2", "", "rs")
+        self.register_string("state", "HUNGRY", "re")
+
     def update(self):
-        if self.capability["state"]["value"] == "HUNGRY":
-            #print("{0}:I need foooooood...{1}".format(self.name(), len(self.topics)))
-            if self.capability["fork1"]["value"] == self.name() and\
-                self.capability["fork2"]["value"] == self.name():
-                    print("{0}:Jay food, eating....{1}".format(self.name(), len(self.topics)))
-                    if self.capability["state"]["value"] != "EATING":
-                        self.emit_signal("state", "EATING")
-        elif self.capability["state"]["value"] == "EATING":
+        if self.get_value("state") == "HUNGRY":
+            return
+        elif self.get_value("state") == "EATING":
             self.eat()
             if len(self.topics) > 100:
                 self.emit_signal("state", "THINKING")
+                print("{0}:Hmmmmm... let me think...{1}".format(self.name(), len(self.topics)))
         else:
             if len(self.topics) == 0:
                 self.emit_signal("state", "HUNGRY")
+                print("{0}:I need foooooood...{1}".format(self.name(), len(self.topics)))
             else:
                 enlightenment = self.think()
                 if enlightenment:
-                    print("Eureka:", enlightenment, len(self.topics))
+                    print("{0}:Eureka:{1}".format(self.name(), enlightenment))
 
     def think(self):
         topic = self._get_text()            # get a text
         if topic:
             rnd = random.random()           # estimate quality
-            if rnd > 0.9999:                # if it is good
+            if rnd > 0.99:                 # if it is good
                 return topic                # return the thought
             else:
                 return None                 # else return nothing
         else:
-            print("Out of topics, need food for thought")
+            print("{0}:Out of topics, need food for thought".format(self.name()))
             
     def eat(self):
         self.topics.append("Blablabla{0}".format(len(self.topics)))
@@ -60,15 +60,15 @@ class Philosopher(ZOCP):
     def on_peer_signaled(self, peer, name, data):
         #print("PHIL SIGNAL:", name, data)
         if name == "TableServant":
-            if self.capability["fork1"]["value"] == self.name() and\
-                self.capability["fork2"]["value"] == self.name():
-                    print("WE CAN EAT")
-                    if self.capability["state"]["value"] != "EATING":
+            if self.get_value("fork1") == self.name() and\
+                self.get_value("fork2") == self.name():
+                    print("{0}:Jay food, eating....{1}".format(self.name(), len(self.topics)))
+                    if self.get_value("state") != "EATING":
                         self.emit_signal("state", "EATING")
             else:
-                if self.capability["state"]["value"] == "EATING":
+                if self.get_value("state") == "EATING":
                     self.emit_signal("state", "THINKING")
-                print("{0}:Hmmmmm... let me think...{1}".format(self.name(), len(self.topics)))           
+                               
                 
                 
     def on_peer_subscribed(self, peer, name, data):
@@ -162,65 +162,61 @@ class TableServantActor(ZOCP):
         #print("TABLE SIGNAL:", name, data)
         if name == "Thread1":
             if data[1] == "HUNGRY":
-                if not self.capability["fork1"]["value"] and not self.capability["fork2"]["value"]:
+                if not self.get_value("fork1") and not self.get_value("fork2"):
                     # forks are available
-                    print("TABLE SIGNAL:", self.capability["fork1"])
                     self.emit_signal("fork1", "Thread1")
                     self.emit_signal("fork2", "Thread1")
             if data[1] == "THINKING":
-                if self.capability["fork1"]["value"] == "Thread1" and\
-                        self.capability["fork1"]["value"] == "Thread1":
+                if self.get_value("fork1") == "Thread1" and\
+                        self.get_value("fork1") == "Thread1":
                     # forks are released
-                    print("TABLE SIGNAL:", self.capability["fork1"])
                     self.emit_signal("fork1", "")
                     self.emit_signal("fork2", "")
         if name == "Thread2":
             if data[1] == "HUNGRY":
-                if not self.capability["fork2"]["value"] and not self.capability["fork3"]["value"]:
+                if not self.get_value("fork2") and not self.get_value("fork3"):
                     # forks are available
                     self.emit_signal("fork2", "Thread2")
                     self.emit_signal("fork3", "Thread2")
             if data[1] == "THINKING":
-                if self.capability["fork2"]["value"] == "Thread2" and\
-                        self.capability["fork3"]["value"] == "Thread2":
+                if self.get_value("fork2") == "Thread2" and\
+                        self.get_value("fork3") == "Thread2":
                     # forks are released
-                    print("TABLE SIGNAL:", self.capability["fork1"])
                     self.emit_signal("fork2", "")
                     self.emit_signal("fork3", "")       
         if name == "Thread3":
             if data[1] == "HUNGRY":
-                if not self.capability["fork3"]["value"] and not self.capability["fork4"]["value"]:
+                if not self.get_value("fork3") and not self.get_value("fork4"):
                     # forks are available
                     self.emit_signal("fork3", "Thread3")
                     self.emit_signal("fork4", "Thread3")
             if data[1] == "THINKING":
-                if self.capability["fork3"]["value"] == "Thread3" and\
-                        self.capability["fork4"]["value"] == "Thread3":
+                if self.get_value("fork3") == "Thread3" and\
+                        self.get_value("fork4") == "Thread3":
                     # forks are released
-                    print("TABLE SIGNAL:", self.capability["fork1"])
                     self.emit_signal("fork3", "")
                     self.emit_signal("fork4", "")
         if name == "Thread4":
             if data[1] == "HUNGRY":
-                if not self.capability["fork4"]["value"] and not self.capability["fork5"]["value"]:
+                if not self.get_value("fork4") and not self.get_value("fork5"):
                     # forks are available
                     self.emit_signal("fork4", "Thread4")
                     self.emit_signal("fork5", "Thread4")
             if data[1] == "THINKING":
-                if self.capability["fork4"]["value"] == "Thread4" and\
-                        self.capability["fork5"]["value"] == "Thread4":
+                if self.get_value("fork4") == "Thread4" and\
+                        self.get_value("fork5") == "Thread4":
                     # forks are released
                     self.emit_signal("fork4", "")
                     self.emit_signal("fork5", "")
         if name == "Thread5":
             if data[1] == "HUNGRY":
-                if not self.capability["fork5"]["value"] and not self.capability["fork1"]["value"]:
+                if not self.get_value("fork5") and not self.get_value("fork1"):
                     # forks are available
                     self.emit_signal("fork5", "Thread5")
                     self.emit_signal("fork1", "Thread5")
             if data[1] == "THINKING":
-                if self.capability["fork5"]["value"] == "Thread5" and\
-                        self.capability["fork1"]["value"] == "Thread5":
+                if self.get_value("fork5") == "Thread5" and\
+                        self.get_value("fork1") == "Thread5":
                     # forks are released
                     self.emit_signal("fork5", "")
                     self.emit_signal("fork1", "")
@@ -230,35 +226,35 @@ class TableServantActor(ZOCP):
     
     def update(self):
         # thread 1
-        if self.capability["state1"]["value"] == "HUNGRY":
-            if not self.capability["fork1"]["value"]:
+        if self.get_value("state1") == "HUNGRY":
+            if not self.get_value("fork1"):
                 self.emit_signal("fork1", "Thread1")
-            if self.capability["fork1"]["value"] == "Thread1" and not self.capability["fork2"]["value"]:
+            if self.get_value("fork1") == "Thread1" and not self.get_value("fork2"):
                 self.emit_signal("fork2", "Thread1")
 
         # thread 2
-        if self.capability["state2"]["value"] == "HUNGRY":
-            if not self.capability["fork2"]["value"]:
+        if self.get_value("state2") == "HUNGRY":
+            if not self.get_value("fork2"):
                 self.emit_signal("fork2", "Thread2")
-            if self.capability["fork2"]["value"] == "Thread2" and not self.capability["fork3"]["value"]:
+            if self.get_value("fork2") == "Thread2" and not self.get_value("fork3"):
                 self.emit_signal("fork3", "Thread2")
         # thread 3
-        if self.capability["state3"]["value"] == "HUNGRY":
-            if not self.capability["fork3"]["value"]:
+        if self.get_value("state3") == "HUNGRY":
+            if not self.get_value("fork3"):
                 self.emit_signal("fork3", "Thread3")
-            if self.capability["fork3"]["value"] == "Thread3" and not self.capability["fork4"]["value"]:
+            if self.get_value("fork3") == "Thread3" and not self.get_value("fork4"):
                 self.emit_signal("fork4", "Thread3")
         # thread 4
-        if self.capability["state4"]["value"] == "HUNGRY":
-            if not self.capability["fork4"]["value"]:
+        if self.get_value("state4") == "HUNGRY":
+            if not self.get_value("fork4"):
                 self.emit_signal("fork4", "Thread4")
-            if self.capability["fork4"]["value"] == "Thread4" and not self.capability["fork5"]["value"]:
+            if self.get_value("fork4") == "Thread4" and not self.get_value("fork5"):
                 self.emit_signal("fork5", "Thread4")
         # thread 5
-        if self.capability["state5"]["value"] == "HUNGRY":
-            if not self.capability["fork5"]["value"]:
+        if self.get_value("state5") == "HUNGRY":
+            if not self.get_value("fork5"):
                 self.emit_signal("fork5", "Thread5")
-            if self.capability["fork5"]["value"] == "Thread5" and not self.capability["fork1"]["value"]:
+            if self.get_value("fork5") == "Thread5" and not self.get_value("fork1"):
                 self.emit_signal("fork1", "Thread5")
         
     def stop(self):
