@@ -55,18 +55,18 @@ class CanvasActor(ZOCP):
     Each class's method is documented below.
     """
 
-    def __init__(self, *args, **kwargs):
-        super(CanvasActor, self).__init__(*args, **kwargs)
+    def __init__(self, name, ns, *args, **kwargs):
+        super(CanvasActor, self).__init__(name, *args, **kwargs)
 
         self._count = 0  #fps counter
         self._img = None
-        self._oldimg = {} #[None]*10
+        self._ns = ns
         self.background_color = (15,15,15)
         self.setup()
         self.reset()
         
         self.register_int("imgId", id(self._img), 're')
-        self.register_int("rmId", 0, 'rs')
+        self.register_int("imgDrawn", 0, 'rs')
 
         self.start()
         self.thread = threading.Thread(target=self.run)
@@ -101,12 +101,14 @@ class CanvasActor(ZOCP):
         """
         self._img = Image.new("RGB", (200,600), self.background_color)
         self._d = ImageDraw.Draw(self._img)
+        self._ns[id(self._img)] = self._img
 
     def send_img(self):
         """
         Sends the image as a signal to any subscribers
         """
-        self.emit_signal("imgId", id(self._img))
+        imgID = id(self._img)
+        self.emit_signal("imgId", imgID)
 
     def get_width(self):
         """
@@ -266,7 +268,7 @@ class CanvasActor(ZOCP):
                 print("Peer {0} subscribed to {1}".format(name, data))
         
         """
-        self.send_img()
+        pass#self.send_img()
     
     def on_peer_unsubscribed(self, peer, name, data, *args, **kwargs):
         """
@@ -295,18 +297,9 @@ class CanvasActor(ZOCP):
         """
         #logger.warning("CANVAS PEER SIGNALED: %s modified %s" %(name, data))
         if name == "Painter":
-            imgID = data[1]
-            if imgID in self._oldimg.keys():
-                # remove img if peer signals it has received it
-                b = self._oldimg.pop(imgID, 0)
-                assert(b != 0)
-                #b.close()
-                #del(b)
-                #print("BOE:", len(self._oldimg))
-            # keep refs to prevent gc
-            self._oldimg[id(self._img)] = self._img
-            self.send_img()
-            self.reset()
+            pass
+            #self.send_img()
+            #self.reset()
 
     def _button_click_exit_mainloop (event):
         event.widget.quit() # this will cause mainloop to unblock.
@@ -336,12 +329,14 @@ class CanvasActor(ZOCP):
                 self._post_update()
  
                 # stats
-                if t + 1 < time.time():
+                if t + 0.1 < time.time():
                     print("{0}: fps: {1}".format(self.name(), 1/((time.time() - t)/self._count)))
+                    self.send_img()
+                    self.reset()
                     t = time.time()
                     self._count = 0
         except KeyboardInterrupt as e:
-            print("Exception: ZCanvas_t:{0}".format(e))
+            print("Exception: CanvasActor:{0}".format(e))
         finally:
             self._running = False
             self.stop()

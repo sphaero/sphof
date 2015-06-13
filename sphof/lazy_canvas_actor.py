@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 .. moduleauthor:: Arnaud Loonstra <arnaud@sphaero.org>
 """
 
-class LazyCanvasActor(ZOCP):
+class LoneCanvasActor(ZOCP):
 
     """The LazyCanvasActors class provides simple methods for drawing on a canvas
 

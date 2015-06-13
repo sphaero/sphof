@@ -23,6 +23,8 @@ class Painters(ZOCP):
         self.canvas = tkinter.Canvas(self._display, width=800, height=600)
         self.canvas.pack()
         self._display.bind("<Button>", self._button_click_exit_mainloop)
+        # this works for multiple threads because of the GIL
+        self._shared_ns = {}
 
         self.setup()
         self.start()
@@ -41,25 +43,25 @@ class Painters(ZOCP):
         self._orig_images = [None,None,None,None]
         self._images = [None,None,None,None]
         self._painters = [
-            MyPainter("Thread1"),
-            MyPainter("Thread2"),
-            MyPainter("Thread3"),
-            MyPainter("Thread4")
+            MyPainter("Thread1", self._shared_ns),
+            MyPainter("Thread2", self._shared_ns),
+            MyPainter("Thread3", self._shared_ns),
+            MyPainter("Thread4", self._shared_ns)
         ]
 
     def on_peer_enter(self, peer, name, *args, **kwargs):
         print("ENTER", peer, name)
         if name == "Thread1":
-            self.signal_subscribe(peer, "rmId", self.uuid(), "id1")
+            #self.signal_subscribe(peer, "rmId", self.uuid(), "id1")
             self.signal_subscribe(self.uuid(), "Painter1", peer, "imgId")
         if name == "Thread2":
-            self.signal_subscribe(peer, "rmId", self.uuid(), "id2")
+            #self.signal_subscribe(peer, "rmId", self.uuid(), "id2")
             self.signal_subscribe(self.uuid(), "Painter2", peer, "imgId")
         if name == "Thread3":
-            self.signal_subscribe(peer, "rmId", self.uuid(), "id3")
+            #self.signal_subscribe(peer, "rmId", self.uuid(), "id3")
             self.signal_subscribe(self.uuid(), "Painter3", peer, "imgId")
         if name == "Thread4":
-            self.signal_subscribe(peer, "rmId", self.uuid(), "id4")
+            #self.signal_subscribe(peer, "rmId", self.uuid(), "id4")
             self.signal_subscribe(self.uuid(), "Painter4", peer, "imgId")
 
     def on_peer_exit(self, peer, name, *args, **kwargs):
@@ -83,7 +85,7 @@ class Painters(ZOCP):
             # this is a really nasty hack to prevent copying the image
             # http://stackoverflow.com/questions/1396668/python-get-object-by-id
             imgID = data[1]
-            img = ctypes.cast(imgID, ctypes.py_object).value
+            img = self._shared_ns.pop(imgID) #ctypes.cast(imgID, ctypes.py_object).value
             #self._orig_images[0] = img
             self._images[0] = ImageTk.PhotoImage(img)
             self.canvas.create_image(0, 0, image=self._images[0], anchor='nw')
@@ -91,7 +93,7 @@ class Painters(ZOCP):
             self.emit_signal("id1", imgID)
         elif name == "Thread2":
             imgID = data[1]
-            img = ctypes.cast(imgID, ctypes.py_object).value
+            img = self._shared_ns.pop(imgID)#ctypes.cast(imgID, ctypes.py_object).value
             #self._orig_images[1] = img
             self._images[1] = ImageTk.PhotoImage(img)
             self.canvas.create_image(200, 0, image=self._images[1], anchor='nw')
@@ -99,7 +101,7 @@ class Painters(ZOCP):
             self.emit_signal("id2", imgID)
         elif name == "Thread3":
             imgID = data[1]
-            img = ctypes.cast(imgID, ctypes.py_object).value
+            img = self._shared_ns.pop(imgID)#img = ctypes.cast(imgID, ctypes.py_object).value
             #self._orig_images[2] = img
             self._images[2] = ImageTk.PhotoImage(img)
             self.canvas.create_image(2*200, 0, image=self._images[2], anchor='nw')
@@ -107,7 +109,7 @@ class Painters(ZOCP):
             self.emit_signal("id3", imgID)
         elif name == "Thread4":
             imgID = data[1]
-            img = ctypes.cast(imgID, ctypes.py_object).value
+            img = self._shared_ns.pop(imgID) #img = ctypes.cast(imgID, ctypes.py_object).value
             #self._orig_images[3] = img
             self._images[3] = ImageTk.PhotoImage(img)
             self.canvas.create_image(3*200, 0, image=self._images[3], anchor='nw')
@@ -135,15 +137,15 @@ class Painters(ZOCP):
                 timeout = reap_at - time.time()
                 if timeout < 0:
                     timeout = 0
-                print("BOE")
-                self.run_once(timeout * 1000)
+                #print("BOE")
+                self.run_once(0)#timeout * 1000)
                 reap_at = time.time() + 1/60.
                 
                 #self.update()
-                print("NOE")
-                self.draw()
+                #print("NOE")
+                #self.draw()
 
-        except Exception as e:
+        except KeyboardInterrupt as e:
             print(e)
         finally:
             self._running = True
