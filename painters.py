@@ -96,7 +96,9 @@ class Painters(CanvasActor):
 
 if __name__ == '__main__':
     logger = logging.getLogger("zocp")
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     logger.addHandler(logging.StreamHandler())
     logger.propagate = False
     test = Painters("Painter")
+    print("run app")
+    test.run()

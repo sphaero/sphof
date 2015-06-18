@@ -166,7 +166,6 @@ class LeadActor(Actor):
     
     def start(self):
         ZOCP.start(self)
-        self.run()
 
     def stop(self):
         # stop all actors

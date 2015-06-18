@@ -13,13 +13,13 @@ logger = logging.getLogger(__name__)
 class Painter(object):
 
     def __init__(self, *args, **kwargs):
-        super(Painter, self).__init__()
         self._img = None
         self._d = None
         self.background_color = (15,15,15)
         self.width = 200
         self.height = 600
         self.reset()
+        super(Painter, self).__init__(*args, **kwargs)
 
     def reset(self):
         """
@@ -189,7 +189,7 @@ class Painter(object):
         self._d.textsize(*args, **kwargs)
 
 
-class PainterActor(Actor, Painter):
+class PainterActor(Painter, Actor):
     """
     The PainterActor class implements the same methods as the
     LonePainter Class. However it provides methods for multithreading.
@@ -236,7 +236,6 @@ class PainterActor(Actor, Painter):
     """
 
     def __init__(self, *args, **kwargs):
-
         self._count = 0  #fps counter
         # run the actor
         super(PainterActor, self).__init__(*args, **kwargs)
@@ -251,7 +250,7 @@ class PainterActor(Actor, Painter):
         self.emit_signal("imgID", imgID)
 
 
-class CanvasActor(LeadActor, Painter):
+class CanvasActor(Painter, LeadActor):
     """
     The CanvasActor class implements methods for drawing on a canvas (screen)
 
@@ -312,7 +311,6 @@ class CanvasActor(LeadActor, Painter):
 
     """
     def __init__(self, *args, **kwargs):
-
         self._display = tkinter.Tk()
         self.canvas = tkinter.Canvas(self._display, width=800, height=600)
         self.canvas.pack()
@@ -321,7 +319,6 @@ class CanvasActor(LeadActor, Painter):
         super(CanvasActor, self).__init__(*args, **kwargs)
         self._image = ImageTk.PhotoImage(self._img)
         self.canvas.create_image(0, 0, image=self._image, anchor='nw')
-
 
     def _button_click_exit_mainloop(self, event):
         event.widget.quit() # this will cause mainloop to unblock.
