@@ -60,7 +60,7 @@ class LoneActor(object):
                 self.draw()
                 count += 1
                 if t + 60 < time.time():
-                    print("{0}: fps: {1}".format(self.name, (time.time() - t)/count))
+                    print("{0}: fps: {1}".format(self.name(), (time.time() - t)/count))
                     t = time.time()
                     count = 0
         except (KeyboardInterrupt, SystemExit) as e:
@@ -147,7 +147,7 @@ class Actor(ZOCP):
  
                 # stats
                 if t + 60 < time.time():
-                    print("{0}: fps: {1}".format(self.name, (time.time() - t)/count))
+                    print("{0}: fps: {1}".format(self.name(), (time.time() - t)/count))
                     t = time.time()
                     count = 1
 
