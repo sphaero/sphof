@@ -3,124 +3,56 @@
 import time
 import logging
 import tkinter
-import threading
 from random import randint
 from PIL import Image, ImageDraw, ImageTk
-from zocp import ZOCP
-from sys import getrefcount as grc
-import ctypes
+import sphof
+from .actors import Actor, LeadActor
+
 logger = logging.getLogger(__name__)
 
-class CanvasActor(ZOCP):
+class Painter(object):
 
-    """
-    The CanvasActor class implements the same methods as the 
-    LazyActor Class. However it provides methods for multithreading. You
-    can therefore instantiate multiple instances of this class.
-
-    .. code-block:: python
-
-        from sphof import CanvasActor
-        
-        class MyPainter(CanvasActor):
-
-            def setup():
-                self.count = 0                   # initialize counter
-
-            def update():
-                self.count += 1                  # increment counter
-                self.count = self.count % 50     # counter bound
-
-            def draw():
-                start = (self.count, self.count) # start position
-                end = (50, 100 - self.count)     # end position
-                color = (
-                        randint(70,110),         # red 
-                        randint(160,210),        # green
-                        randint(70,210)          # blue
-                        )
-                self.line(start, end, color, 2)  # draw line
-
-    To display its drawing you need to send the image to a collecting 
-    Actor which can display the image on screen. In order to send an
-    image use the :py:meth:`.send_img` method.
-     
-    This class has many methods for drawing on a canvas, ie:
-
-    * :py:meth:`.line`
-    * :py:meth:`.rectangle`
-    * :py:meth:`.ellipse`
-    * :py:meth:`.arc`
-
-    Each class's method is documented below.
-    """
-
-    def __init__(self, name, ns, *args, **kwargs):
-        super(CanvasActor, self).__init__(name, *args, **kwargs)
-
-        self._count = 0  #fps counter
+    def __init__(self, *args, **kwargs):
+        super(Painter, self).__init__()
         self._img = None
-        self._ns = ns
+        self._d = None
         self.background_color = (15,15,15)
-        self.setup()
+        self.width = 200
+        self.height = 600
         self.reset()
-        
-        self.register_int("imgId", id(self._img), 're')
-        self.register_int("imgDrawn", 0, 'rs')
-
-        self.start()
-        self.thread = threading.Thread(target=self.run)
-        self.thread.daemon = True
-        self.thread.start()
-
-    def setup(self):
-        """
-        Called a startup.
-        
-        Add variables here
-        i.e.::
-
-            self.count = 0
-
-        and in update()::
-
-            count += 1
-
-        """
-        logger.warning("Please implement a setup method!!!")
-
-    def update(self):
-        """
-        Called every loop
-        """
-        logger.warning("Please implement an update method!!!")
 
     def reset(self):
         """
         Clears the image to the background color
         """
-        self._img = Image.new("RGB", (200,600), self.background_color)
+        self._img = Image.new("RGB", (self.width,self.height), self.background_color)
         self._d = ImageDraw.Draw(self._img)
-        self._ns[id(self._img)] = self._img
-
-    def send_img(self):
-        """
-        Sends the image as a signal to any subscribers
-        """
-        imgID = id(self._img)
-        self.emit_signal("imgId", imgID)
 
     def get_width(self):
         """
         Returns the width of the canvas
         """
-        return 200
+        return self.width
+
+    def set_width(self, width):
+        """
+        Set the width of the canvas
+        :param width: Width of the canvas in pixels
+        """
+        self.width = width
 
     def get_height(self):
         """
         Returns the height of the canvas
         """
         return 600
+
+    def set_height(self, height):
+        """
+        Set the height of the canvas
+        :param width: Width of the canvas in pixels
+        """
+        self.height = height
 
     def arc(self, *args, **kwargs):
         """
@@ -256,90 +188,155 @@ class CanvasActor(ZOCP):
         """
         self._d.textsize(*args, **kwargs)
 
-    def on_peer_subscribed(self, peer, name, data, *args, **kwargs):
-        """
-        This method is called when a peer Actor subscribes to an 
-        emitter of this Actor. In order to use this method you need to
-        override it in your class, ie.:
-        
-        . code-block:: python
-        
-            def on_peer_subscribed(self, peer, name, data):
-                print("Peer {0} subscribed to {1}".format(name, data))
-        
-        """
-        pass#self.send_img()
-    
-    def on_peer_unsubscribed(self, peer, name, data, *args, **kwargs):
-        """
-        This method is called when a peer Actor unsubscribes to an 
-        emitter of this Actor. In order to use this method you need to
-        override it in your class, ie.:
-        
-        . code-block:: python
-        
-            def on_peer_unsubscribed(self, peer, name, data):
-                print("Peer {0} unsubscribed to {1}".format(name, data))
-        
-        """
-        pass
 
-    def on_peer_signaled(self, peer, name, data, *args, **kwargs):
+class PainterActor(Actor, Painter):
+    """
+    The PainterActor class implements the same methods as the
+    LonePainter Class. However it provides methods for multithreading.
+    You can therefore instantiate multiple instances of this class. The
+    limitation of the PainterActor is that it cannot display images. You
+    will need a CanvasActor (which is a LeadActor) to display images of
+    the Painter Actor
+
+    .. code-block:: python
+
+        from sphof import PainterActor
+        
+        class MyPainter(PainterActor):
+
+            def setup():
+                self.count = 0                   # initialize counter
+
+            def update():
+                self.count += 1                  # increment counter
+                self.count = self.count % 50     # counter bound
+
+            def draw():
+                start = (self.count, self.count) # start position
+                end = (50, 100 - self.count)     # end position
+                color = (
+                        randint(70,110),         # red
+                        randint(160,210),        # green
+                        randint(70,210)          # blue
+                        )
+                self.line(start, end, color, 2)  # draw line
+
+    To display the PainterActor's drawing you need to send the image
+    to CanvasActor which can display the image on screen. In order to
+    send an image use the :py:meth:`.send_img` method.
+
+    This class has many methods for drawing on a canvas, ie:
+
+    * :py:meth:`.line`
+    * :py:meth:`.rectangle`
+    * :py:meth:`.ellipse`
+    * :py:meth:`.arc`
+
+    Each class's method is documented below.
+    """
+
+    def __init__(self, *args, **kwargs):
+
+        self._count = 0  #fps counter
+        # run the actor
+        super(PainterActor, self).__init__(*args, **kwargs)
+        self.register_int("imgID", id(self._img), 're')
+
+    def send_img(self):
         """
-        This method is called when a peer Actor signals. This means
-        you have subscribed to its emitter. In order to use this method 
-        you need to override it in your class, ie.:
+        Sends the image as a signal to any subscribers
+        """
+        imgID = id(self._img)
+        sphof.shared_ns[imgID] = self._img
+        self.emit_signal("imgID", imgID)
+
+
+class CanvasActor(LeadActor, Painter):
+    """
+    The CanvasActor class implements methods for drawing on a canvas (screen)
+
+    .. code-block:: python
+
+        from sphof import CanvasActor
         
-        . code-block:: python
+        class MyPainter(CanvasActor):
+
+            def setup(self):
+                self.count = 0                   # initialize counter
+
+            def update():
+                self.count += 1                  # increment counter
+                self.count = self.count % 50     # counter bound
+
+            def draw():
+                start = (self.count, self.count) # start position
+                end = (50, 100 - self.count)     # end position
+                color = (
+                        randint(70,110),         # red
+                        randint(160,210),        # green
+                        randint(70,210)          # blue
+                        )
+                self.line(start, end, color, 2)  # draw line
+
+    To display drawings of PainterActor you need to receive the image
+    of the PainterActor by subscribing to a signal emitted by the
+    PainterActor.
+
+    .. code-block:: python
+
+        from sphof import CanvasActor
         
+        class MyPainter(CanvasActor):
+
+            def setup(self):
+                self.register_int("PaintingID", 0, "re") # create a sensor of image ids
+
+            def on_enter_peer(self, peer, name, data):
+                if name == "PainterName":       # PainterName is the name of the PainterActor
+                    self.signal_subscribe(self.uuid(), "PaintingID", peer, "PaintingID")
+
             def on_peer_signaled(self, peer, name, data):
-                print("Peer {0} signaled to {1}".format(name, data))
-        """
-        #logger.warning("CANVAS PEER SIGNALED: %s modified %s" %(name, data))
-        if name == "Painter":
-            pass
-            #self.send_img()
-            #self.reset()
+                if name == "PainterName":
+                    self.draw_painting(data.value)
 
-    def _button_click_exit_mainloop (event):
+            def draw():
+                start = (self.count, self.count) # start position
+                end = (50, 100 - self.count)     # end position
+                color = (
+                        randint(70,110),         # red
+                        randint(160,210),        # green
+                        randint(70,210)          # blue
+                        )
+                self.line(start, end, color, 2)  # draw line
+
+
+    """
+    def __init__(self, *args, **kwargs):
+
+        self._display = tkinter.Tk()
+        self.canvas = tkinter.Canvas(self._display, width=800, height=600)
+        self.canvas.pack()
+        self._display.bind("<Button>", self._button_click_exit_mainloop)
+
+        super(CanvasActor, self).__init__(*args, **kwargs)
+        self._image = ImageTk.PhotoImage(self._img)
+        self.canvas.create_image(0, 0, image=self._image, anchor='nw')
+
+
+    def _button_click_exit_mainloop(self, event):
         event.widget.quit() # this will cause mainloop to unblock.
-        self.stop()
 
-    def _pre_update(self):
-        self._count += 1
-        
-    def _post_update(self):
-        pass
+    def draw_img(self, img, x, y):
+        """
+        Draw the image at position x,y
+        """
+        self.canvas.create_image(x, y, image=img, anchor='nw')
 
-    def run(self):
-        self._running = True
-        t = time.time()
-        try:
-            reap_at = time.time() + 1/120.
-            while self._running:
-                timeout = reap_at - time.time()
-                if timeout < 0:
-                    timeout = 0
-                self.run_once(timeout * 1000)
-                # set next interval
-                reap_at = time.time() + 1/120.
- 
-                self._pre_update()
-                self.update()
-                self._post_update()
- 
-                # stats
-                if t + 0.1 < time.time():
-                    print("{0}: fps: {1}".format(self.name(), 1/((time.time() - t)/self._count)))
-                    self.send_img()
-                    self.reset()
-                    t = time.time()
-                    self._count = 0
-        except KeyboardInterrupt as e:
-            print("Exception: CanvasActor:{0}".format(e))
-        finally:
-            self._running = False
-            self.stop()
+    def post_draw(self):
+        """
+        Display the painting on the TK canvas
+        """
+        self._display.update()
 
 
 if __name__ == '__main__':

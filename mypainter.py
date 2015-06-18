@@ -1,13 +1,22 @@
 from random import randint
-from sphof import CanvasActor
-from PIL import Image, ImageDraw
+import sphof
+from sphof import CanvasActor, PainterActor
 
-class MyPainter(CanvasActor):
+class MyPainter(PainterActor):
+
     def setup(self):
-        pass
-    
+        self.count = 0
+        return
+
     def update(self):
-        #print("Painter update")
+        self.count += 1
+        if self.count > 60 and len(sphof.shared_ns) < 8:
+            self.send_img()
+            self.reset()
+            self.count = 0
+            #print(self.count)
+
+    def draw(self):
         #self._img = Image.new("RGB", (200,600), (255,255,55))
         #self._d = ImageDraw.Draw(self._img)
         start = (randint(0,200), randint(0,600))
@@ -17,4 +26,9 @@ class MyPainter(CanvasActor):
 
 if __name__ == '__main__':
     test = MyPainter("MyPainter1")
+    try:
+        test.thread.join()
+    except:
+        test.stop()
+    print("hmm")
 
