@@ -2,13 +2,19 @@
 # -*- coding: utf-8 -*-
 import time
 import logging
-import tkinter
 from random import randint
 from PIL import Image, ImageDraw, ImageTk
 import sphof
 from .actors import Actor, LeadActor
 
 logger = logging.getLogger(__name__)
+
+try:
+    import tkinter
+except:
+    logger.warn("No Tkinter installed")
+    pass
+
 
 class Painter(object):
     """

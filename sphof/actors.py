@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import time
 import logging
-import tkinter
 import threading
 from zocp import ZOCP
 
