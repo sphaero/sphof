@@ -73,10 +73,8 @@ subscribing your variable to the other Actor's variable. The code for
         def update(self):
             print(self.get_value('MyOtherInt')
 
-Test 1: Painters Spree
-######################
+Starting Actors
+###############
 
-In the first test you will need to display the drawings of multiple
-painters. You need to use the :doc:`Canvas Actor classes <canvas_actors>`
-for these have simple methods for drawing.
-
+Visualising and editing Actors
+##############################
