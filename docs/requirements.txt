@@ -8,4 +8,5 @@ readthedocs-sphinx-ext
 recommonmark
 babel
 six
+https://github.com/zeromq/pyre/archive/master.zip
 https://github.com/z25/pyZOCP/archive/master.zip
