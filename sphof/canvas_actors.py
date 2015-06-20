@@ -3,7 +3,6 @@
 import time
 import logging
 from random import randint
-from PIL import Image, ImageDraw, ImageTk
 import sphof
 from .actors import Actor, LeadActor
 
@@ -11,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import tkinter
+    from PIL import Image, ImageDraw, ImageTk
 except:
     logger.warn("No Tkinter installed")
     pass
