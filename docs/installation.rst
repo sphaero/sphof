@@ -1,8 +1,8 @@
 Installation
 ------------
 
-.. :note:
-   You're machine should come preinstalled with the Sphof module.
+.. note::
+   You're machine should come preinstalled with the :py:mod:`sphof` module.
 
 Operating System installation
 #############################
