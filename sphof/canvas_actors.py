@@ -11,7 +11,18 @@ from .actors import Actor, LeadActor
 logger = logging.getLogger(__name__)
 
 class Painter(object):
+    """
+    The Painter class provides simple methods for drawing, ie:
+    
+    * :py:meth:`.line`
+    * :py:meth:`.rectangle`
+    * :py:meth:`.ellipse`
+    * :py:meth:`.arc`
 
+    The default width and height are 200 by 600 pixels.
+    
+    Each class's method is documented below
+    """
     def __init__(self, *args, **kwargs):
         self._img = None
         self._d = None
@@ -191,12 +202,11 @@ class Painter(object):
 
 class PainterActor(Painter, Actor):
     """
-    The PainterActor class implements the same methods as the
-    LonePainter Class. However it provides methods for multithreading.
-    You can therefore instantiate multiple instances of this class. The
-    limitation of the PainterActor is that it cannot display images. You
-    will need a CanvasActor (which is a LeadActor) to display images of
-    the Painter Actor
+    The PainterActor class is an :py:class:`sphof.Actor` with all the 
+    :py:class:`sphof.Painter` class's methods and providing methods to handover
+    the image to a LeadActor.
+
+    example:
 
     .. code-block:: python
 
@@ -209,7 +219,11 @@ class PainterActor(Painter, Actor):
 
             def update():
                 self.count += 1                  # increment counter
-                self.count = self.count % 50     # counter bound
+                if self.count == 60:
+                    self.count = 0               # reset counter
+                    self.send_img()              # emit the imgID so a 
+                                                 # LeadActor could 
+                                                 # display it
 
             def draw():
                 start = (self.count, self.count) # start position
@@ -224,15 +238,20 @@ class PainterActor(Painter, Actor):
     To display the PainterActor's drawing you need to send the image
     to CanvasActor which can display the image on screen. In order to
     send an image use the :py:meth:`.send_img` method.
+    
+    The :py:meth:`.send_img` method emits a imgID signal containing a 
+    pointer to the image of this Actor. It class reset() so the actor
+    can paint a new image. 
 
-    This class has many methods for drawing on a canvas, ie:
+    This class has many methods inherited from the 
+    :py:class:`sphof.Painter` class, ie:
 
     * :py:meth:`.line`
     * :py:meth:`.rectangle`
     * :py:meth:`.ellipse`
     * :py:meth:`.arc`
 
-    Each class's method is documented below.
+    Each class's extra methods are documented below.
     """
 
     def __init__(self, *args, **kwargs):

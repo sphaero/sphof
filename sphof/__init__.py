@@ -1,11 +1,10 @@
 #!/usr/bin/python 
 # -*- coding: utf-8 -*-
-__all__ = ['canvas_actors']
+#__all__ = ['canvas_actors']
 #__all__ = ['pyre', 'zbeacon', 'zhelper']
 
 from .actors import LoneActor, LeadActor, Actor
-from .canvas_actor import CanvasActor, PainterActor
-from .lazy_canvas_actor import LoneCanvasActor
+from .canvas_actors import CanvasActor, PainterActor, Painter
 
 shared_ns = {}      # this is the shared namespace used for passing pointers
                     # id(var) : var

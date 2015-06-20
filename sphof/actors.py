@@ -9,7 +9,17 @@ from zocp import ZOCP
 logger = logging.getLogger(__name__)
 
 class LoneActor(object):
+    """
+    The LoneActor class runs an application loop.
     
+    By default the LoneActor loop runs at 60 iterations per second. This 
+    means your update and draw method is called every 1/60th second.
+    
+    * Use the :py:meth:`.LoneActor.setup` method to setup the class
+    * Use :py:meth:`.LoneActor.update` method to update anything you\
+    have setup
+    * Use :py:meth:`.LoneActor.draw` method to visualise
+    """    
     def __init__(self):
         self.setup()
         
@@ -69,7 +79,20 @@ class LoneActor(object):
 class Actor(ZOCP):
     """
     An Actor class runs inside its own thread. It's usually started
-    by a LeadActor
+    by a LeadActor!
+    
+    By default the Actor loop runs at 60 iterations per second. This 
+    means your update and draw method is called every 1/60th second.
+    
+    * Use the :py:meth:`.Actor.setup` method to setup the class
+    * Use :py:meth:`.Actor.update` method to update anything you\
+    have setup
+    * Use :py:meth:`.Actor.draw` method to visualise
+    
+    .. warning::
+        It is important to understand that you cannot visualise directly
+        from an Actor. To visualise what an actor draws you'll need to 
+        handover the image to a :py:class:`LeadActor`
     """
     def __init__(self, *args, **kwargs):
         super(Actor, self).__init__(*args, **kwargs)
@@ -159,6 +182,18 @@ class Actor(ZOCP):
         logger.warning("Actor {0} finished.".format(self.name()))
 
 class LeadActor(Actor):
+    """
+    A LeadActor class runs in the main thread. It inherits all methods 
+    from the Actor class but has some additional methods to start Actors 
+    
+    By default the LeadActor loop runs at 60 iterations per second. This 
+    means your update and draw method is called every 1/60th second.
+    
+    * Use the :py:meth:`.Actor.setup` method to setup the class
+    * Use :py:meth:`.Actor.update` method to update anything you\
+    have setup
+    * Use :py:meth:`.Actor.draw` method to visualise
+    """
     
     def __init__(self, *args, **kwargs):
         self.actors = []
