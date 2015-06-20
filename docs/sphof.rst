@@ -1,8 +1,10 @@
-sphof module
-============
+sphof module reference
+======================
+.. py:currentmodule:: sphof
+.. py:module:: sphof
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
-   canvas_actors
    actors
+   canvas_actors

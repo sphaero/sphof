@@ -7,6 +7,19 @@ from zocp import ZOCP
 
 logger = logging.getLogger(__name__)
 
+"""
+Package Example (:mod:`actors`)
+==================================
+
+.. currentmodule:: actors
+.. autosummary::
+   :toctree:
+
+   LoneActor
+   Actor
+   LeadActor
+"""
+
 class LoneActor(object):
     """
     The LoneActor class runs an application loop.

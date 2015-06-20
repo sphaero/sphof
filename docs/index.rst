@@ -12,7 +12,7 @@ for Creative Coders. The toolkit is build upon the ZOCP framework.
 You can find the API documentation as well as simple examples of the toolkit's usage.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 20
 
    installation
    guide

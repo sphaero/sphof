@@ -1,17 +1,25 @@
-.. toctree::
-   :maxdepth: 2
-
-Canvas Actor class
+Canvas Actor classes
 -----------------------
 
+The Canvas Actor classes provide classes to create drawings/images and 
+to display them.
+
+PainterActor class
+##################
 .. autoclass:: sphof.PainterActor
     :members:
     :undoc-members:
     :show-inheritance:
+
+CanvasActor class
+#################
 .. autoclass:: sphof.CanvasActor
     :members:
     :undoc-members:
     :show-inheritance:
+
+PainterActor class
+##################
 .. autoclass:: sphof.Painter
     :members:
     :undoc-members:
