@@ -16,6 +16,9 @@ You can find the API documentation as well as simple examples of the toolkit's u
 
    installation
    guide
+   test1
+   test2
+   test3
    sphof
 
 Indices and tables
