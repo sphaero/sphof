@@ -158,6 +158,7 @@ class Actor(ZOCP):
         """
         Called after update
         """
+        return
         logger.warning("Please implement a draw method!!!")
     
     def post_draw(self):
@@ -213,7 +214,7 @@ class LeadActor(Actor):
     """
     
     def __init__(self, *args, **kwargs):
-        self.actors = []
+        self.actors = set()
         super(LeadActor, self).__init__(*args, **kwargs)
     
     def start(self):
@@ -225,3 +226,14 @@ class LeadActor(Actor):
             act.stop()
         # call our original stop method
         Actor.stop(self)
+
+    def add_actor(self, actor):
+        self.actors.add(actor)
+        
+    def remove_actor(self, actor):
+        try:
+            self.actors.remove(actor)
+        except KeyError:
+            log.warning("Actor unknown: ".format(actor))
+        else:
+            actor.stop()

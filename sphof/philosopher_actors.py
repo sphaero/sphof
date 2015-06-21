@@ -3,16 +3,26 @@
 import time
 import logging
 import random
+import csv
 import sphof
 from sphof import Actor, LeadActor, LoneActor
 
 logger = logging.getLogger(__name__)
+import os
+this_dir, this_filename = os.path.split(__file__)
+DATA_PATH = os.path.join(this_dir, "quotes_all.csv")
 
 class Philosopher(object):
     """
     The Philospher class provides the think and eat method.
     """
     def __init__(self, *args, **kwargs):
+        self.quotes = []
+        with open(DATA_PATH) as quotes:
+            quotes_reader = csv.reader(quotes, delimiter=';')
+            for row in quotes_reader:
+                self.quotes.append(row[0])
+        quotes.close()
         self.topics = []                      # food for thought
         super(Philosopher, self).__init__(*args, **kwargs)        
 
@@ -28,7 +38,7 @@ class Philosopher(object):
         topic = self._get_text()            # get a text
         if topic:
             rnd = random.random()           # estimate quality
-            if rnd > 0.99:                  # if it is good
+            if rnd > 0.997:                  # if it is good
                 return topic                # return the thought
             else:
                 return None                 # else return nothing
@@ -40,7 +50,8 @@ class Philosopher(object):
         The eat method makes the philosopher eat. This fills its list
         of topics for thinking (food for thought)
         """
-        self.topics.append("Blablabla{0}".format(len(self.topics)))
+        idx = random.randint(0,len(self.quotes)-1)
+        self.topics.append(self.quotes.pop(idx))
         #time.sleep(0.1)                 # crunch
 
     def _get_text(self):

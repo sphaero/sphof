@@ -24,7 +24,9 @@ class SinglePhilospher(LonePhilosopherActor):
         if not self.state_hungry:
             enlightenment = self.think()
             if enlightenment:
-                print("Eureka:", enlightenment, len(self.topics))
+                print("".join(["#"]*70))
+                print("{0}: Eureka... {1}".format(self.name(), enlightenment))
+                print("".join(["#"]*70))
         else:
             self.eat()
 
