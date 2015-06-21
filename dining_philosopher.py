@@ -1,13 +1,11 @@
 import time
 import logging
 import random
-import tkinter
-import threading
-from PIL import Image, ImageDraw, ImageTk
-from zocp import ZOCP
 import logging
+import sphof
+from sphof import Actor
 
-class Philosopher(ZOCP):
+class Philosopher(Actor):
     
     def __init__(self, *args, **kwargs):
         super(Philosopher, self).__init__(*args, **kwargs)

@@ -32,7 +32,9 @@ class LoneActor(object):
     have setup
     * Use :py:meth:`.LoneActor.draw` method to visualise
     """    
-    def __init__(self):
+    def __init__(self, name, *args, **kwargs):
+        self._name = name
+        super(LoneActor, self).__init__(*args, **kwargs)
         self.setup()
         
     def setup(self):
@@ -51,17 +53,20 @@ class LoneActor(object):
         """
         logger.warning("Please implement a setup method!!!")
     
-    def update():
+    def update(self):
         """
         Called every loop
         """
         logger.warning("Please implement an update method!!!")
 
-    def draw():
+    def draw(self):
         """
         Called after update
         """
-        logger.warning("Please implement a draw method!!!")
+        return
+
+    def name(self):
+        return self._name
 
     def run(self):
         self._running = True

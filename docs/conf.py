@@ -264,3 +264,5 @@ autodoc_mock_imports = [
     'tkinter',
     'PIL',
 ]
+
+autodoc_member_order = 'bysource'

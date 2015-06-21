@@ -8,3 +8,4 @@ sphof module reference
 
    actors
    canvas_actors
+   philosopher_actors
