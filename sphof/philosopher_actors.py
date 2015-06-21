@@ -10,7 +10,7 @@ from sphof import Actor, LeadActor, LoneActor
 logger = logging.getLogger(__name__)
 import os
 this_dir, this_filename = os.path.split(__file__)
-DATA_PATH = os.path.join(this_dir, "quotes_all.csv")
+DATA_PATH = os.path.join(this_dir, "quotes.csv")
 
 class Philosopher(object):
     """
