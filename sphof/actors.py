@@ -160,7 +160,7 @@ class Actor(ZOCP):
         Called every loop
         """
         logger.warning("{0}:No update method implemented!!!".format(self.name()))
-        #self.update = self._dummy
+        self.update = self._dummy
 
     def post_update(self):
         return
@@ -173,7 +173,8 @@ class Actor(ZOCP):
         Called after update
         """
         return
-        logger.warning("Please implement a draw method!!!")
+        logger.warning("{0}:No draw method implemented!!!".format(self.name()))
+        self.draw = self._dummy
     
     def post_draw(self):
         return
