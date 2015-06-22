@@ -1,5 +1,16 @@
 Actor classes
 -----------------------
+Frequently used methods
+#######################
+.. autosummary::
+
+   sphof.Actor
+   sphof.Actor.setup
+   sphof.Actor.update
+   sphof.Actor.draw
+   sphof.LeadActor.add_actor
+   sphof.LeadActor.run
+   sphof.LeadActor.stop
 
 Actor class
 ###################
@@ -10,7 +21,7 @@ Actor class
 LeadActor class
 ###################
 .. autoclass:: sphof.LeadActor
-    :members: 
+    :members: setup, update, draw, run, add_actor, remove_actor, stop
     :undoc-members:
     :show-inheritance:
 

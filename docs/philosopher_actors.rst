@@ -2,7 +2,7 @@ Philosopher Actor classes
 -------------------------
 
 The Philosopher Actor classes provide classes with methods for the 
-Dining Philosopher problem from test 2. 
+Dining Philosophers Problem from test 2. 
 
 PhilosopherActor class
 ######################
