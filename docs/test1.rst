@@ -46,8 +46,8 @@ painters using multiple processors we need to create an Actor for
 displaying and other Actors for creating the drawings. As you read in 
 the :doc:`guide <guide>` you can use a :py:class:`LeadActor` to start 
 other Actors. You can now understand that this :py:class:`LeadActor` 
-also needs to display as it will be the only one with access to the 
-display!
+also needs to display the drawings as it will be the only Actor 
+with access to the display of the computer!
 
 PainterActor and CanvasActor Class
 ##################################
@@ -66,8 +66,9 @@ You can pass the imgID value and it will draw the image.
 
 *Why these methods? You have to understand that you cannot just pass images
 around like that. An image occupies a large amount of memory and copying
-them takes a lot of time. Therefore the sending happens by passing a
+them takes a large amount of time. Therefore the sending happens by passing a
 reference instead of the full image. In languages like C or C++ you'd
-call this a pointer. This is a bit difficult in a language like Python.
-Anyway these are just convenience methods to prevent you from running 
-into trouble and keeping your machine performant.*
+call this a pointer. This is a bit difficult in a language like Python
+because if we would send the image it will be garbage collected after
+being send. Anyway, these are just convenience methods to prevent you from 
+running into trouble and keeping your machine performant.*

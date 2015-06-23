@@ -18,6 +18,12 @@ CanvasActor class
     :undoc-members:
     :show-inheritance:
 
+LonePainterActor class
+######################
+.. autoclass:: sphof.LonePainterActor
+    :members:
+    :undoc-members:
+
 Painter class
 #############
 .. autoclass:: sphof.Painter

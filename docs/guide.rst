@@ -13,7 +13,8 @@ Introduction
 
 In the framework we call a small program an 'Actor'. The :py:mod:`sphof`
 framework provides different 'Actor' classes. These classes have a 
-setup(), update() and draw() method similar to OpenFrameworks.
+setup(), update() and draw() method similar to OpenFrameworks and 
+Processing.
 
 Additionally to these methods there are methods to enable communication
 between the Actors. Communication is done using signals which you'll need
@@ -59,10 +60,10 @@ Remember as we are running Actors on multiple processors you will never
 know if your program started first or if the other was first. Therefore 
 the :py:meth:`on_peer_enter <zocp.ZOCP.on_peer_enter>` method will tell you.
 
-It might also be easier to directly link the variable of an Actor to
-your another variable. You can do this by registering your variable and
-then subscribing your variable to the other Actor's variable. The code for
-the 'MySecondActor' then becomes:
+It might also be easier to directly link variables of Actors. You can do 
+this by registering a variable and then subscribing this variable to 
+another Actor's variable. In the MySecondActor example we can do this as 
+follows:
 
 .. code-block:: python
    :linenos:
@@ -81,7 +82,7 @@ the 'MySecondActor' then becomes:
 
 .. note::
     Notice the difference in the last parameter of the register_int
-    method of both class. In the MyFirstActor class it is 're' and in the
+    method of both classes. In the MyFirstActor class it is 're' and in the
     MySecondActor it is 'rs'. 'r' Means the variable is **r**\ eadable. 's'
     Means the variable is a 'signal **s**\ ensor'. This implies it can
     receive signals. 'e' Means the variable is a 'signal **e**\ mitter'. It 
@@ -91,12 +92,12 @@ the 'MySecondActor' then becomes:
 Starting Actors
 ###############
 
-Now we know how to program the Actors and let them communicate with each
-other we only need to start them. It's important to know that a regular 
-program always has a 'main' thread. From the 'main' thread you start 
-other threads in order to utilize multiple processors. For the 'main' 
-thread we use the :py:class:`LeadActor <sphof.LeadActor>` class which 
-provides us methods for starting more :py:class:`Actor <sphof.Actor>` 
+We now know how to program the Actors and let them communicate with each
+other. However, we still need to start them. It's important to know that 
+any regular program always has one 'main' thread. Only from the 'main' 
+thread you can start other threads in order to utilize multiple 
+processors. For the 'main' thread we use the :py:class:`LeadActor <sphof.LeadActor>` 
+class which provides us methods for starting more :py:class:`Actor <sphof.Actor>` 
 instances. Remember you can only have **one** LeadActor in your program!
 
 For example a simple LeadActor looks like this:
@@ -115,7 +116,7 @@ For example a simple LeadActor looks like this:
     app = MyLeadActor('MyLeadActor')
     app.run()
 
-Save this text as 'myapp.py'. You can run this program as follows:
+Save this text as 'myapp.py'. You can then run this program as follows:
 
 .. code-block:: bash
     
@@ -126,8 +127,8 @@ a KeyboardInterrupt. Just press the CTRL-C keyboard combination.
 
 Also notice line 9 where we instantiate the MyLeadActor class and providing
 "MyLeadActor" as an argument. Every Actor needs a name. You can provide
-the name when you instantiate the Actor instance. If you don't provide a
-name a random name will be made up!
+the name as a first argument when you instantiate the Actor instance. 
+If you don't provide a name a random name will be made up!
 
 Now if we would want to run the MyFirstActor and MySecondActor we can use
 the MyLeadActor class as follows:
@@ -170,6 +171,7 @@ the MyLeadActor class as follows:
        def update(self):
            return
            print(self.get_value("MyLeadInt"))
+
 
    app = MyLeadActor('MyLeadActor')
    app.run()
