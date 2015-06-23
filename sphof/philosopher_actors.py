@@ -38,7 +38,7 @@ class Philosopher(object):
         topic = self._get_text()            # get a text
         if topic:
             rnd = random.random()           # estimate quality
-            if rnd > 0.997:                  # if it is good
+            if rnd > 0.997:                 # if it is good
                 return topic                # return the thought
             else:
                 return None                 # else return nothing
@@ -51,7 +51,7 @@ class Philosopher(object):
         of topics for thinking (food for thought)
         """
         idx = random.randint(0,len(self.quotes)-1)
-        self.topics.append(self.quotes.pop(idx))
+        self.topics.append(self.quotes[idx])
         #time.sleep(0.1)                 # crunch
 
     def _get_text(self):
