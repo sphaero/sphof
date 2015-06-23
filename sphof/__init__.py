@@ -4,7 +4,7 @@
 #__all__ = ['pyre', 'zbeacon', 'zhelper']
 
 from .actors import LoneActor, LeadActor, Actor
-from .canvas_actors import CanvasActor, PainterActor, Painter
+from .canvas_actors import CanvasActor, PainterActor, LonePainterActor, Painter
 from .philosopher_actors import PhilosopherActor, LonePhilosopherActor
 
 shared_ns = {}      # this is the shared namespace used for passing pointers

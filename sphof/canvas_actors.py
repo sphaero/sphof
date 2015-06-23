@@ -4,7 +4,7 @@ import time
 import logging
 from random import randint
 import sphof
-from .actors import Actor, LeadActor
+from .actors import Actor, LeadActor, LoneActor
 
 logger = logging.getLogger(__name__)
 
@@ -53,10 +53,11 @@ class Painter(object):
 
     def set_width(self, width):
         """
-        Set the width of the canvas
+        Set the width of the canvas, it will reset your image!
         :param width: Width of the canvas in pixels
         """
         self.width = width
+        self.reset()
 
     def get_height(self):
         """
@@ -66,10 +67,11 @@ class Painter(object):
 
     def set_height(self, height):
         """
-        Set the height of the canvas
+        Set the height of the canvas, it will reset your image!
         :param width: Width of the canvas in pixels
         """
         self.height = height
+        self.reset()
 
     def arc(self, *args, **kwargs):
         """
@@ -348,11 +350,44 @@ class CanvasActor(Painter, LeadActor):
     def _button_click_exit_mainloop(self, event):
         event.widget.quit() # this will cause mainloop to unblock.
 
-    def draw_img(self, img, x, y):
+    def draw_img_from_id(self, img, x, y):
         """
         Draw the image at position x,y
         """
         self.canvas.create_image(x, y, image=img, anchor='nw')
+
+    def pre_draw(self):
+        """
+        Display the painting on the TK canvas
+        """
+        self._image = ImageTk.PhotoImage(self._img)
+        self.canvas.create_image(0, 0, image=self._image, anchor='nw')
+
+    def post_draw(self):
+        self._display.update()
+
+
+class LonePainterActor(Painter, LoneActor):
+
+    def __init__(self, *args, **kwargs):
+        self._display = tkinter.Tk()
+        self.canvas = tkinter.Canvas(self._display, width=800, height=600)
+        self.canvas.pack()
+        self._display.bind("<Button>", self._button_click_exit_mainloop)
+
+        super(LonePainterActor, self).__init__(*args, **kwargs)
+        self._image = ImageTk.PhotoImage(self._img)
+        self.canvas.create_image(0, 0, image=self._image, anchor='nw')
+
+    def _button_click_exit_mainloop(self, event):
+        event.widget.quit() # this will cause mainloop to unblock.
+
+    def pre_draw(self):
+        """
+        Prepare the TK canvas
+        """
+        self._image = ImageTk.PhotoImage(self._img)
+        self.canvas.create_image(0, 0, image=self._image, anchor='nw')
 
     def post_draw(self):
         """

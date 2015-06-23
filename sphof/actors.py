@@ -50,11 +50,14 @@ class LoneActor(object):
 
         and in the update() method::
 
-            count += 1
+            self.count += 1
 
         """
         logger.warning("{0}:No setup method implemented!!!".format(self.name()))
     
+    def pre_update(self):
+        return
+
     def update(self):
         """
         Called every loop
@@ -62,10 +65,21 @@ class LoneActor(object):
         logger.warning("{0}:No update method implemented!!!".format(self.name()))
         self.update = self._dummy
 
+    def post_update(self):
+        return
+
+    def pre_draw(self):
+        return
+
     def draw(self):
         """
         Called after update
         """
+        return
+        logger.warning("{0}:No draw method implemented!!!".format(self.name()))
+        self.draw = self._dummy
+
+    def post_draw(self):
         return
 
     def name(self):
@@ -78,16 +92,23 @@ class LoneActor(object):
         try:
             reap_at = time.time() + 1/60.
             while self._running:
-                self.update()
                 timeout = reap_at - time.time()
                 if timeout > 0:
                     #timeout = 0
                     time.sleep(timeout)
                 else:
-                    log.debug("Can't do 60 fps")
+                    logger.debug("Can't do 60 fps")
                 #self.run_once(0) #timeout * 1000)
                 reap_at = time.time() + 1/60.
+
+                self.pre_update()
+                self.update()
+                self.post_update()
+
+                self.pre_draw()
                 self.draw()
+                self.post_draw()
+                
                 count += 1
                 if t + 60 < time.time():
                     print("{0}: fps: {1}".format(self.name(), (time.time() - t)/count))
@@ -140,7 +161,7 @@ class Actor(ZOCP):
 
         and in the update() method::
 
-            count += 1
+            self.count += 1
 
         """
         logger.warning("{0}:No setup method implemented!!!".format(self.name()))
@@ -204,6 +225,7 @@ class Actor(ZOCP):
                 self.draw()
                 self.post_draw()
  
+                count += 1
                 # stats
                 if t + 60 < time.time():
                     print("{0}: fps: {1}".format(self.name(), (time.time() - t)/count))

@@ -29,12 +29,10 @@ class Painters(CanvasActor):
         self._count = 0
         self._orig_images = [None,None,None,None]
         self._images = [None,None,None,None]
-        self.actors.extend([
-            MyPainter("Thread1"),
-            MyPainter("Thread2"),
-            MyPainter("Thread3"),
-            MyPainter("Thread4")
-        ])
+        self.add_actor(MyPainter("Thread1"))
+        self.add_actor(MyPainter("Thread2"))
+        self.add_actor(MyPainter("Thread3"))
+        self.add_actor(MyPainter("Thread4"))
 
     def on_peer_enter(self, peer, name, *args, **kwargs):
         print("ENTER", peer, name)
@@ -81,17 +79,10 @@ class Painters(CanvasActor):
             img = sphof.shared_ns.pop(imgID)
             self._images[3] = ImageTk.PhotoImage(img)
 
-    def update(self):
-        start = (randint(0,200), randint(0,600))
-        end = (randint(0,200), randint(0,600))
-        color = (randint(70,110), 0, 0)
-        self.line([start, end], color, 10)
-        
     def draw(self):
-        for i, img in enumerate(self._images):
-            if img:
-                self.draw_img(img, i*200, 0)
-        self._display.update()
+        for i, imgID in enumerate(self._images):
+            if imgID:
+                self.draw_img_from_id(imgID, i*200, 0)
 
 
 if __name__ == '__main__':
