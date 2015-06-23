@@ -61,8 +61,9 @@ to send the image. However there is one rule of thumb: Once you send the
 image you do not own it anymore!
 
 The :py:class:`CanvasActor <sphof.PainterActor>` class provides a 
-:py:meth:`draw_img_from_id <sphof.CanvasActor.draw_img_from_id>` method.
-You can pass the imgID value and it will draw the image.
+:py:meth:`get_img_from_id <sphof.CanvasActor.draw_img_from_id>` method.
+You can pass the imgID value and it will return the image. You can then
+use :py:meth:`draw_img <sphof.CanvasActor.draw_img>` to display the image.
 
 *Why these methods? You have to understand that you cannot just pass images
 around like that. An image occupies a large amount of memory and copying
