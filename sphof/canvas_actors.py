@@ -300,7 +300,7 @@ class CanvasActor(Painter, LeadActor):
                 self.register_int("PaintingID", 0, "re") # create a sensor for image ids
                 # ... setup the painter here
 
-            def on_peer_enter(self, peer, name, data):
+            def on_peer_enter(self, peer, name, headers):
                 if name == "PainterName":       # PainterName is the name of your PainterActor
                     self.signal_subscribe(self.uuid(), "PaintingID", peer, "imgID")
 

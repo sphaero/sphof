@@ -25,11 +25,11 @@ a simple painter using the :py:class:`sphof.LoneActor` class:
        def draw(self):
            start = (
                randint(0, self.get_width()),   # x coordinate
-               randint(0, self.get_height())     # y coordinate
+               randint(0, self.get_height())   # y coordinate
                )
            end = (
                randint(0, self.get_width()),   # x coordinate
-               randint(0, self.get_height())     # y coordinate
+               randint(0, self.get_height())   # y coordinate
                )
            color = (
                randint(70,110),                # red color
@@ -53,7 +53,7 @@ PainterActor and CanvasActor Class
 ##################################
 
 The :py:class:`PainterActor <sphof.PainterActor>` class provides a 
-:py:meth:`send_img <sphof.PainterActor.send_img` method for 
+:py:meth:`send_img <sphof.PainterActor.send_img>` method for 
 signalling a new image. The :py:class:`PainterActor <sphof.PainterActor>` 
 class also automatically registers the 'imgID' variable which is a 
 reference to the image. Therefore you can simply call :py:meth:`send_img <sphof.PainterActor.send_img>`

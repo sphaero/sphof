@@ -8,21 +8,18 @@ PainterActor class
 ##################
 .. autoclass:: sphof.PainterActor
     :members:
-    :undoc-members:
     :show-inheritance:
 
 CanvasActor class
 #################
 .. autoclass:: sphof.CanvasActor
     :members:
-    :undoc-members:
     :show-inheritance:
 
 LonePainterActor class
 ######################
 .. autoclass:: sphof.LonePainterActor
     :members:
-    :undoc-members:
     :show-inheritance:
 
 Painter class
