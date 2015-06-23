@@ -270,10 +270,12 @@ class PainterActor(Painter, Actor):
 
     def send_img(self):
         """
-        Sends the image as a signal to any subscribers
+        Sends the image as a signal to any subscribers. The canvas
+        is reset when the image is sent!
         """
         imgID = id(self._img)
         sphof.shared_ns[imgID] = self._img
+        self.reset()
         self.emit_signal("imgID", imgID)
 
 

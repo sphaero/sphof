@@ -12,7 +12,6 @@ class MyPainter(PainterActor):
         self.count += 1
         if self.count > 60 and len(sphof.shared_ns) < 8:
             self.send_img()
-            self.reset()
             self.count = 0
             #print(self.count)
 

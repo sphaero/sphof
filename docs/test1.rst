@@ -49,9 +49,25 @@ other Actors. You can now understand that this :py:class:`LeadActor`
 also needs to display as it will be the only one with access to the 
 display!
 
-.. note::
-    The :py:class:`PainterActor <sphof.PainterActor>` class provides a 'send_img' method for 
-    signalling a new image. The :py:class:`PainterActor <sphof.PainterActor>` 
-    class also automatically registers the 'imgID' variable which is a 
-    reference to the image. The :py:class:`CanvasActor <sphof.CanvasActor>` 
-    is a LeadActor! It has the method 'draw_img' which accepts the imgID value.
+PainterActor and CanvasActor Class
+##################################
+
+The :py:class:`PainterActor <sphof.PainterActor>` class provides a 
+:py:meth:`send_img <sphof.PainterActor.send_img` method for 
+signalling a new image. The :py:class:`PainterActor <sphof.PainterActor>` 
+class also automatically registers the 'imgID' variable which is a 
+reference to the image. Therefore you can simply call :py:meth:`send_img <sphof.PainterActor.send_img>`
+to send the image. However there is one rule of thumb: Once you send the 
+image you do not own it anymore!
+
+The :py:class:`CanvasActor <sphof.PainterActor>` class provides a 
+:py:meth:`draw_img_from_id <sphof.CanvasActor.draw_img_from_id>` method.
+You can pass the imgID value and it will draw the image.
+
+*Why these methods? You have to understand that you cannot just pass images
+around like that. An image occupies a large amount of memory and copying
+them takes a lot of time. Therefore the sending happens by passing a
+reference instead of the full image. In languages like C or C++ you'd
+call this a pointer. This is a bit difficult in a language like Python.
+Anyway these are just convenience methods to prevent you from running 
+into trouble and keeping your machine performant.*
