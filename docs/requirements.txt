@@ -1,5 +1,5 @@
 virtualenv
-Sphinx
+Sphinx==1.2.3
 sphinx-rtd-theme
 alabaster!=0.7.5
 setuptools
