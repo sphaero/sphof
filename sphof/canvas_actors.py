@@ -210,8 +210,8 @@ class Painter(object):
 
 class PainterActor(Painter, Actor):
     """
-    The PainterActor class is an :py:class:`sphof.Actor` with all the 
-    :py:class:`sphof.Painter` class's methods and providing methods to handover
+    The PainterActor class is an :py:class:`Actor<sphof.Actor>` with all the 
+    :py:class:`Painter<sphof.Painter>` class's methods and providing methods to handover
     the image to a LeadActor.
 
     example:
@@ -222,18 +222,17 @@ class PainterActor(Painter, Actor):
         
         class MyPainter(PainterActor):
 
-            def setup():
+            def setup(self):
                 self.count = 0                   # initialize counter
 
-            def update():
+            def update(self):
                 self.count += 1                  # increment counter
                 if self.count == 60:
                     self.count = 0               # reset counter
                     self.send_img()              # emit the imgID so a 
                                                  # LeadActor could 
                                                  # display it
-
-            def draw():
+            def draw(self):
                 start = (self.count, self.count) # start position
                 end = (50, 100 - self.count)     # end position
                 color = (
@@ -244,12 +243,13 @@ class PainterActor(Painter, Actor):
                 self.line(start, end, color, 2)  # draw line
 
     To display the PainterActor's drawing you need to send the image
-    to CanvasActor which can display the image on screen. In order to
-    send an image use the :py:meth:`.send_img` method.
+    to :py:class:`CanvasActor<sphof.CanvasActor>` which can display 
+    the image on screen. In order to send an image use the :py:meth:`.send_img` 
+    method.
     
-    The :py:meth:`.send_img` method emits a imgID signal containing a 
-    pointer to the image of this Actor. It class reset() so the actor
-    can paint a new image. 
+    The :py:meth:`.send_img` method emits a 'imgID' signal containing a 
+    pointer to the image of this Actor. It calls reset() so the actor
+    can paint on a new canvas. 
 
     This class has many methods inherited from the 
     :py:class:`sphof.Painter` class, ie:
@@ -263,15 +263,13 @@ class PainterActor(Painter, Actor):
     """
 
     def __init__(self, *args, **kwargs):
-        self._count = 0  #fps counter
-        # run the actor
         super(PainterActor, self).__init__(*args, **kwargs)
         self.register_int("imgID", id(self._img), 're')
 
     def send_img(self):
         """
-        Sends the image as a signal to any subscribers. The canvas
-        is reset when the image is sent!
+        Sends the image as a signal to any subscribers using the 'imgID'
+        emitter. The canvas is reset after the image is sent!
         """
         imgID = id(self._img)
         sphof.shared_ns[imgID] = self._img
@@ -283,6 +281,8 @@ class CanvasActor(Painter, LeadActor):
     """
     The CanvasActor class implements methods for drawing on a canvas (screen)
 
+    example:
+
     .. code-block:: python
 
         from sphof import CanvasActor
@@ -292,11 +292,11 @@ class CanvasActor(Painter, LeadActor):
             def setup(self):
                 self.count = 0                   # initialize counter
 
-            def update():
+            def update(self):
                 self.count += 1                  # increment counter
                 self.count = self.count % 50     # counter bound
 
-            def draw():
+            def draw(self):
                 start = (self.count, self.count) # start position
                 end = (50, 100 - self.count)     # end position
                 color = (
@@ -306,9 +306,11 @@ class CanvasActor(Painter, LeadActor):
                         )
                 self.line(start, end, color, 2)  # draw line
 
-    To display drawings of PainterActor you need to receive the image
-    of the PainterActor by subscribing to a signal emitted by the
+    To display drawings of PainterActors you need to receive the image
+    of a PainterActor by subscribing to the 'imgID' signal emitter of the
     PainterActor.
+
+    example:
 
     .. code-block:: python
 
@@ -317,27 +319,21 @@ class CanvasActor(Painter, LeadActor):
         class MyPainter(CanvasActor):
 
             def setup(self):
-                self.register_int("PaintingID", 0, "re") # create a sensor of image ids
+                self.painter_img = None
+                self.register_int("PaintingID", 0, "re") # create a sensor for image ids
+                # ... setup the painter here
 
             def on_enter_peer(self, peer, name, data):
-                if name == "PainterName":       # PainterName is the name of the PainterActor
-                    self.signal_subscribe(self.uuid(), "PaintingID", peer, "PaintingID")
+                if name == "PainterName":       # PainterName is the name of your PainterActor
+                    self.signal_subscribe(self.uuid(), "PaintingID", peer, "imgID")
 
             def on_peer_signaled(self, peer, name, data):
                 if name == "PainterName":
-                    self.draw_painting(data.value)
+                    self.painter_img = self.get_img_from_id(self.get_value("PaintingID"))
 
-            def draw():
-                start = (self.count, self.count) # start position
-                end = (50, 100 - self.count)     # end position
-                color = (
-                        randint(70,110),         # red
-                        randint(160,210),        # green
-                        randint(70,210)          # blue
-                        )
-                self.line(start, end, color, 2)  # draw line
-
-
+            def draw(self):
+                if self.painter_img:
+                    self.draw_img(self.painter_img)
     """
     def __init__(self, *args, **kwargs):
         self._display = tkinter.Tk()
@@ -352,16 +348,20 @@ class CanvasActor(Painter, LeadActor):
     def _button_click_exit_mainloop(self, event):
         event.widget.quit() # this will cause mainloop to unblock.
 
-    def draw_img_from_id(self, img, x, y):
+    def get_img_from_id(self, imgID):
+        """
+        Get the image from the given imgID
+        """
+        img = sphof.shared_ns.pop(imgID)
+        return ImageTk.PhotoImage(img)
+
+    def draw_img(self, img, x=0, y=0):
         """
         Draw the image at position x,y
         """
         self.canvas.create_image(x, y, image=img, anchor='nw')
 
     def pre_draw(self):
-        """
-        Display the painting on the TK canvas
-        """
         self._image = ImageTk.PhotoImage(self._img)
         self.canvas.create_image(0, 0, image=self._image, anchor='nw')
 
@@ -385,16 +385,10 @@ class LonePainterActor(Painter, LoneActor):
         event.widget.quit() # this will cause mainloop to unblock.
 
     def pre_draw(self):
-        """
-        Prepare the TK canvas
-        """
         self._image = ImageTk.PhotoImage(self._img)
         self.canvas.create_image(0, 0, image=self._image, anchor='nw')
 
     def post_draw(self):
-        """
-        Display the painting on the TK canvas
-        """
         self._display.update()
 
 

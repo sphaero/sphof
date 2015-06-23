@@ -23,6 +23,7 @@ LonePainterActor class
 .. autoclass:: sphof.LonePainterActor
     :members:
     :undoc-members:
+    :show-inheritance:
 
 Painter class
 #############
