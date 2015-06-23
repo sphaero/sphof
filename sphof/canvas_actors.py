@@ -218,29 +218,30 @@ class PainterActor(Painter, Actor):
 
     .. code-block:: python
 
-        from sphof import PainterActor
+       from sphof import PainterActor
         
-        class MyPainter(PainterActor):
+       class MyPainter(PainterActor):
 
-            def setup(self):
-                self.count = 0                   # initialize counter
+           def setup(self):
+               self.count = 0                   # initialize counter
 
-            def update(self):
-                self.count += 1                  # increment counter
-                if self.count == 60:
-                    self.count = 0               # reset counter
-                    self.send_img()              # emit the imgID so a 
-                                                 # LeadActor could 
-                                                 # display it
-            def draw(self):
-                start = (self.count, self.count) # start position
-                end = (50, 100 - self.count)     # end position
-                color = (
-                        randint(70,110),         # red
-                        randint(160,210),        # green
-                        randint(70,210)          # blue
-                        )
-                self.line(start, end, color, 2)  # draw line
+           def update(self):
+               self.count += 1                  # increment counter
+               if self.count == self.get_width():
+                   self.count = 0               # reset counter
+                   self.send_img()              # emit the imgID so a 
+                                                # LeadActor could 
+                                                # display it
+           def draw(self):
+               start = (self.count, 0)          # start position
+               end = ( self.count, 
+                       self.get_height())       # end position
+               color = (
+                       randint(7,210),          # red
+                       randint(16,210),         # green
+                       randint(70,210)          # blue
+                       )
+               self.line((start, end), color, 2)# draw line
 
     To display the PainterActor's drawing you need to send the image
     to :py:class:`CanvasActor<sphof.CanvasActor>` which can display 
@@ -280,31 +281,7 @@ class PainterActor(Painter, Actor):
 class CanvasActor(Painter, LeadActor):
     """
     The CanvasActor class implements methods for drawing on a canvas (screen)
-
-    example:
-
-    .. code-block:: python
-
-        from sphof import CanvasActor
-        
-        class MyPainter(CanvasActor):
-
-            def setup(self):
-                self.count = 0                   # initialize counter
-
-            def update(self):
-                self.count += 1                  # increment counter
-                self.count = self.count % 50     # counter bound
-
-            def draw(self):
-                start = (self.count, self.count) # start position
-                end = (50, 100 - self.count)     # end position
-                color = (
-                        randint(70,110),         # red
-                        randint(160,210),        # green
-                        randint(70,210)          # blue
-                        )
-                self.line(start, end, color, 2)  # draw line
+    similar to the :py:class:`PainterActor<sphof.PainterActor>`
 
     To display drawings of PainterActors you need to receive the image
     of a PainterActor by subscribing to the 'imgID' signal emitter of the
@@ -323,7 +300,7 @@ class CanvasActor(Painter, LeadActor):
                 self.register_int("PaintingID", 0, "re") # create a sensor for image ids
                 # ... setup the painter here
 
-            def on_enter_peer(self, peer, name, data):
+            def on_peer_enter(self, peer, name, data):
                 if name == "PainterName":       # PainterName is the name of your PainterActor
                     self.signal_subscribe(self.uuid(), "PaintingID", peer, "imgID")
 
@@ -334,6 +311,8 @@ class CanvasActor(Painter, LeadActor):
             def draw(self):
                 if self.painter_img:
                     self.draw_img(self.painter_img)
+       la = MyCanvas()
+       la.run()
     """
     def __init__(self, *args, **kwargs):
         self._display = tkinter.Tk()
