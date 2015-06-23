@@ -51,15 +51,6 @@ signal_subscribe method. I.e:
        def on_peer_signaled(self, peer_id, name, signal):
            print(name, signal)
            
-.. note::
-    Notice the difference in the last parameter of the register_int
-    method of both class. In the MyFirstActor class it is 're' and in the
-    MySecondActor it is 'rs'. 'r' Means the variable is **r**\ eadable. 's'
-    Means the variable is a 'signal **s**\ ensor. This implies it can
-    receive signals. 'e' Means the variable is a signal **e**\ mitter. It 
-    means the variable can send signals. Read more about this in the
-    :py:meth:`ZOCP reference<zocp.ZOCP.register_int>`.
-
 By subscribing to the MyFirstInt variable of the MyFirstActor the 
 MyFirstActor will send the value of the variable through a signal. Of 
 course you first need to be aware of the MyFirstActor, hence the usage 
@@ -88,6 +79,15 @@ the 'MySecondActor' then becomes:
        def update(self):
            print(self.get_value('MySecondInt'))
 
+.. note::
+    Notice the difference in the last parameter of the register_int
+    method of both class. In the MyFirstActor class it is 're' and in the
+    MySecondActor it is 'rs'. 'r' Means the variable is **r**\ eadable. 's'
+    Means the variable is a 'signal **s**\ ensor'. This implies it can
+    receive signals. 'e' Means the variable is a 'signal **e**\ mitter'. It 
+    means the variable can send signals. Read more about this in the
+    :py:meth:`ZOCP reference<zocp.ZOCP.register_int>`.
+
 Starting Actors
 ###############
 
@@ -95,7 +95,7 @@ Now we know how to program the Actors and let them communicate with each
 other we only need to start them. It's important to know that a regular 
 program always has a 'main' thread. From the 'main' thread you start 
 other threads in order to utilize multiple processors. For the 'main' 
-thread we use the :py:class:`LeadActor <sphof.LeadActor>`. class which 
+thread we use the :py:class:`LeadActor <sphof.LeadActor>` class which 
 provides us methods for starting more :py:class:`Actor <sphof.Actor>` 
 instances. Remember you can only have **one** LeadActor in your program!
 
@@ -124,12 +124,17 @@ Save this text as 'myapp.py'. You can run this program as follows:
 It will print repeating lines of '0'. You can stop the program by sending
 a KeyboardInterrupt. Just press the CTRL-C keyboard combination.
 
+Also notice line 9 where we instantiate the MyLeadActor class and providing
+"MyLeadActor" as an argument. Every Actor needs a name. You can provide
+the name when you instantiate the Actor instance. If you don't provide a
+name a random name will be made up!
+
 Now if we would want to run the MyFirstActor and MySecondActor we can use
-the MyLeadActor. The code will then become:
+the MyLeadActor class as follows:
 
 .. code-block:: python
    :linenos:
-   :emphasize-lines: 18
+   :emphasize-lines: 18,28,29
    
    from sphof import *
 
@@ -170,16 +175,16 @@ the MyLeadActor. The code will then become:
    app.run()
 
 .. note:: 
-  Notice at line 18 is different from the original MySecondActor. This 
+  Line 18 is different from the original MySecondActor. This is 
   because we now run 3 Actors and we only want to subscribe the 
   MyFirstActor to the MySecondActor. Therefore we need to test which
   Actor we are dealing with in the :py:meth:`on_peer_enter <zocp.ZOCP.on_peer_enter>`
   method.
 
-Visualising and editing Actors
+Visualizing and editing Actors
 ##############################
 
-Ok, we now now how to program Actors and how to run them. Now imagine a
+Ok, we now know how to program Actors and how to run them. Now imagine a
 whole lot of them. To be able to oversee how all Actors relate to each 
 other we have a visualization tool. On your system you can find the 
 ActorEditor. 
@@ -201,6 +206,6 @@ equal to the code:
 
    self.signal_subscribe(<LeadActor>.uuid(),  "MyLeadInt", <MyFirstActor>.uuid(), "MyFirstInt")
 
-.. note:
-   Of course you need to replace the <LeadActor> and <MyFirstActor> with 
+.. note::
+   Of course you need to replace <LeadActor> and <MyFirstActor> with 
    the right names in your code
