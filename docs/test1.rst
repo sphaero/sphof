@@ -4,7 +4,7 @@ Test 1: Painters Spree
 In this first test we will create a program which handles multiple
 painters. This is often a problem in concurrent programs as OpenGL and 
 most graphic libraries can only run in the main thread. Therefore it is
-impossible to let multiple programs draw on the display. We will need to
+impossible to let multiple Actors draw on the display. We will need to
 workaround this limitation.
 
 You need to use the :doc:`Canvas Actor classes <canvas_actors>`
