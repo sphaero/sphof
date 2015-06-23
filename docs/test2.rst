@@ -23,12 +23,12 @@ and eat. There are many solutions to this problem but you are adviced to
 use a waiter which serves the table. 
 
 In the framework a :py:class:`PhilosopherActor<sphof.PhilosopherActor>` 
-class is provided. This actor has the methods :py:meth:`think()<sphof.PhilosopherActor.think>`
-and :py:meth:`eat()<sphof.PhilosopherActor.eat>`. If a  philosopher is in the 
-thinking state the think() method needs to be called. If the philosopher 
-is in the eating  state the :py:meth:`eat()<sphof.PhilosopherActor.eat>`
-method needs to be called. A single philosopher implementation is given 
-below:
+class is provided. This actor has the methods :py:meth:`think<sphof.PhilosopherActor.think>`
+and :py:meth:`eat<sphof.PhilosopherActor.eat>`. If a  philosopher is in the 
+thinking state the :py:meth:`think<sphof.PhilosopherActor.think>` method 
+needs to be called. If the philosopher is in the eating  state the 
+:py:meth:`eat<sphof.PhilosopherActor.eat>` method needs to be called. 
+A single philosopher implementation is given below:
 
 .. code-block:: python
 
