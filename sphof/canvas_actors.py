@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import tkinter
-    from PIL import Image, ImageDraw, ImageTk
+    from PIL import Image, ImageDraw, ImageTk, ImageFont
 except:
     logger.warn("No Tkinter installed")
     pass
@@ -35,6 +35,7 @@ class Painter(object):
         self.background_color = (15,15,15)
         self.width = 200
         self.height = 600
+        self._font = font = ImageFont.load_default()
         self.reset()
         super(Painter, self).__init__(*args, **kwargs)
 
@@ -187,25 +188,23 @@ class Painter(object):
         """
         self._d.rectangle(self, *args, **kwargs)
 
-    def text(self, *args, **kwargs):
+    def text(self, xy, text, fill):
         """
         Draws the string at the given position.
 
         :param xy: Top left corner of the text.
         :param text: Text to be drawn.
-        :param font: An :py:class:`~PIL.ImageFont.ImageFont` instance.
         :param fill: Color to use for the text.        
         """
-        self._d.text(*args, **kwargs)
+        self._d.text(xy, text, font=self._font, fill=fill)
     
-    def textsize(self, *args, **kwargs):
+    def textsize(self, text):
         """
         Return the size of the given string, in pixels.
 
         :param text: Text to be measured.
-        :param font: An :py:class:`~PIL.ImageFont.ImageFont` instance.        
         """
-        self._d.textsize(*args, **kwargs)
+        self._d.textsize(text, self._font)
 
 
 class PainterActor(Painter, Actor):
