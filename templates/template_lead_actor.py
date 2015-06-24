@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from sphof import LeadActor
 
 class TemplateLeadActor(LeadActor):
@@ -11,7 +14,7 @@ class TemplateLeadActor(LeadActor):
     def draw(self):
         return
     
-    def on_peer_enter(self, peer, name, hdrs):
+    def on_peer_enter(self, peer, name, headers):
         return
     
     def on_peer_exit(self, peer, name):

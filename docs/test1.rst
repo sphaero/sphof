@@ -1,6 +1,9 @@
 Test 1: Painters Spree
 ----------------------
 
+*Imagine you have created a simple application that draws something on the
+screen. Your processor is not fast enough to draw 60 frames per second.*
+
 In this first test we will create a program which handles multiple
 painters. This is often a problem in concurrent programs as OpenGL and 
 most graphic libraries can only run in the main thread. Therefore it is
