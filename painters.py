@@ -27,8 +27,7 @@ class Painters(CanvasActor):
         self.register_int("id3", 0, "re")
         self.register_int("id4", 0, "re")
         self._count = 0
-        self._orig_images = [None,None,None,None]
-        self._images = [None,None,None,None]
+        self.painter_images = [None,None,None,None]
         self.add_actor(MyPainter("Thread1"))
         self.add_actor(MyPainter("Thread2"))
         self.add_actor(MyPainter("Thread3"))
@@ -48,41 +47,33 @@ class Painters(CanvasActor):
     def on_peer_exit(self, peer, name, *args, **kwargs):
         print("EXIT", peer, name)
         if name == "Thread1":
-            self._orig_images[0] = None
-            self._images[0] = None
+            self.painter_images[0] = None
         if name == "Thread2":
-            self._orig_images[1] = None
-            self._images[1] = None
+            self.painter_images[1] = None
         if name == "Thread3":
-            self._orig_images[2] = None
-            self._images[2] = None
+            self.painter_images[2] = None
         if name == "Thread4":
-            self._orig_images[3] = None
-            self._images[3] = None
+            self.painter_images[3] = None
     
     def on_peer_signaled(self, peer, name, data, *args, **kwargs):
         #logger.warning("ZOCP PEER SIGNALED: %s modified %s" %(name, data))
         if name == "Thread1":
             imgID = data[1]
-            img = sphof.shared_ns.pop(imgID)
-            self._images[0] = ImageTk.PhotoImage(img)
+            self.painter_images[0] = self.get_img_from_id(imgID)
         elif name == "Thread2":
             imgID = data[1]
-            img = sphof.shared_ns.pop(imgID)
-            self._images[1] = ImageTk.PhotoImage(img)
+            self.painter_images[1] = self.get_img_from_id(imgID)
         elif name == "Thread3":
             imgID = data[1]
-            img = sphof.shared_ns.pop(imgID)
-            self._images[2] = ImageTk.PhotoImage(img)
+            self.painter_images[2] = self.get_img_from_id(imgID)
         elif name == "Thread4":
             imgID = data[1]
-            img = sphof.shared_ns.pop(imgID)
-            self._images[3] = ImageTk.PhotoImage(img)
+            self.painter_images[3] = self.get_img_from_id(imgID)
 
     def draw(self):
-        for i, imgID in enumerate(self._images):
-            if imgID:
-                self.draw_img_from_id(imgID, i*200, 0)
+        for i, img in enumerate(self.painter_images):
+            if img:
+                self.draw_img(img, i*200, 0)
 
 
 if __name__ == '__main__':

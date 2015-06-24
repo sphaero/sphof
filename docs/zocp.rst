@@ -5,7 +5,6 @@ Frequently used methods
 #######################
 .. autosummary::
 
-   zocp.ZOCP
    zocp.ZOCP.register_int
    zocp.ZOCP.register_float
    zocp.ZOCP.register_string
