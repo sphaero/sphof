@@ -228,7 +228,7 @@ class Actor(ZOCP):
                 count += 1
                 # stats
                 if t + 60 < time.time():
-                    print("{0}: fps: {1}".format(self.name(), (time.time() - t)/count))
+                    print("{0}: fps: {1}".format(self.name(), count/(time.time() - t)))
                     t = time.time()
                     count = 1
 
