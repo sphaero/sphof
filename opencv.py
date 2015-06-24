@@ -138,15 +138,6 @@ class CVCapLeadActor(LeadActor):
             self.signal_subscribe(self.uuid(), "invert_in", peer, "img_out")
             self.signal_subscribe(peer, "img_in", self.uuid(), "imgID_out")
     
-    def on_peer_exit(self, peer, name):
-        return
-    
-    def on_peer_subscribed(self, peer, name, data):
-        return
-    
-    def on_peer_unsubscribed(self, peer, name, data):
-        return
-    
     def on_peer_signaled(self, peer, name, date):
         if name == "CVActor":
             self.thumb = sphof.shared_ns.pop(self.get_value('thumb_in'))
@@ -156,7 +147,6 @@ class CVCapLeadActor(LeadActor):
             self.invert = sphof.shared_ns.pop(self.get_value('invert_in'))
 
     def stop(self):
-        print("stop bla")
         self.video_capture.release()
         cv2.destroyAllWindows()
         super(CVCapLeadActor, self).stop()
