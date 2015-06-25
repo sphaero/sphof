@@ -3,9 +3,9 @@ Guide
 
 In this test we will create programs which enable the use of multiple
 processors of a computer. You will be provided with a framework and some
-tools to create a program for the assignment.
+tools to create programs for the assignments.
 
-This website provides the description of the assignments as well as a
+This website provides the descriptions of the assignments as well as a
 reference for the framework and tools.
 
 Introduction
@@ -17,11 +17,11 @@ setup(), update() and draw() method similar to OpenFrameworks and
 Processing.
 
 Additionally to these methods there are methods to enable communication
-between the Actors. Communication is done using signals which you'll need
-to use during the assignments.
+between the Actors. This communication is done using signals which you
+are going to use during the assignments.
 
-Using the Actor classes you can register variables to be used for 
-communication between actors. I.e.:
+In the Actor classes you can register named variables to be used for 
+communication with other Actors. I.e. to register an integer:
 
 .. code-block:: python
    :linenos:
@@ -36,7 +36,7 @@ communication between actors. I.e.:
 
 It's important to understand that once an Actor has a variable 
 registered every other Actor can access this value. However before
-reading the value of a variable the Actor interested in the variable
+acquiring the value of a variable the Actor interested in the variable
 first needs to subscribe to it. This can be accomplished by using the 
 signal_subscribe method. I.e:
 
@@ -46,7 +46,7 @@ signal_subscribe method. I.e:
 
    class MySecondActor(Actor):
 
-       def on_peer_enter(self, peer, peer_name, *args, **kwargs):
+       def on_peer_enter(self, peer, name, headers, *args, **kwargs):
            self.signal_subscribe(self.uuid(),  None, peer, "MyFirstInt")
 
        def on_peer_signaled(self, peer_id, name, signal):
@@ -74,7 +74,7 @@ follows:
        def setup(self):
            self.register_int("MySecondInt", 0, "rs")
 
-       def on_enter_peer(self, peer, peer_name, *args, **kwargs):
+       def on_enter_peer(self, peer, name, headers, *args, **kwargs):
            self.signal_subscribe(self.uuid(),  "MySecondInt", peer, "MyFirstInt")
 
        def update(self):
@@ -92,7 +92,7 @@ follows:
 Starting Actors
 ###############
 
-We now know how to program the Actors and let them communicate with each
+We now know how to program Actors and let them communicate with each
 other. However, we still need to start them. It's important to know that 
 any regular program always has one 'main' thread. Only from the 'main' 
 thread you can start other threads in order to utilize multiple 
@@ -124,6 +124,10 @@ Save this text as 'myapp.py'. You can then run this program as follows:
 
 It will print repeating lines of '0'. You can stop the program by sending
 a KeyboardInterrupt. Just press the CTRL-C keyboard combination.
+
+..  note::
+    You can also directly execute from Geany however it is important to
+    understand this is exactly the same as running from a terminal.
 
 Also notice line 9 where we instantiate the MyLeadActor class and providing
 "MyLeadActor" as an argument. Every Actor needs a name. You can provide
@@ -176,12 +180,12 @@ the MyLeadActor class as follows:
    app = MyLeadActor('MyLeadActor')
    app.run()
 
-.. note:: 
-  Line 18 is different from the original MySecondActor. This is 
-  because we now run 3 Actors and we only want to subscribe the 
-  MyFirstActor to the MySecondActor. Therefore we need to test which
-  Actor we are dealing with in the :py:meth:`on_peer_enter <zocp.ZOCP.on_peer_enter>`
-  method.
+..  note:: 
+    Line 18 is different from the original MySecondActor. This is 
+    because we now run 3 Actors and we only want to subscribe the 
+    MyFirstActor to the MySecondActor. Therefore we need to test which
+    Actor we are dealing with in the :py:meth:`on_peer_enter <zocp.ZOCP.on_peer_enter>`
+    method.
 
 Visualizing and editing Actors
 ##############################
@@ -193,7 +197,7 @@ ActorEditor.
 
 .. image:: actor_editor.png
 
-Just start the tool and it will display any Actors you have running. You
+Just start the ActorEditor and it will display any Actors you have running. You
 can make subscriptions between Actors bij dragging a line between Actor's
 emitters and sensors. Emitters are always on the right side of an Actor
 representation. Sensors are on the left.
