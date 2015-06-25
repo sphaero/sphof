@@ -18,6 +18,7 @@ class OpenCVActor(Actor):
         emitter. The canvas is reset after the image is sent!
         """
         imgID = id(img)
+        assert(imgID not in sphof.shared_ns)
         sphof.shared_ns[imgID] = img
         self.emit_signal(ID, imgID)
     
@@ -63,7 +64,10 @@ class InvertActor(OpenCVActor):
         """
         Get the image from the given imgID
         """
-        return sphof.shared_ns.pop(hex(imgID))
+        try:
+            return sphof.shared_ns.pop(hex(imgID))
+        except KeyError:
+            print("Key Error", sphof.shared_ns)
 
 
 class BlurActor(OpenCVActor):
@@ -79,7 +83,10 @@ class BlurActor(OpenCVActor):
         """
         Get the image from the given imgID
         """
-        return sphof.shared_ns.pop(str(imgID))
+        try:
+            return sphof.shared_ns.pop(str(imgID))
+        except KeyError:
+            print("Key Error", sphof.shared_ns)
 
 
 class CVCapLeadActor(LeadActor):
