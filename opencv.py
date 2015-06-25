@@ -25,7 +25,10 @@ class OpenCVActor(Actor):
         """
         Get the image from the given imgID
         """
-        return sphof.shared_ns.pop(imgID)
+        try:
+            return sphof.shared_ns.pop(imgID)
+        except KeyError:
+            print("Key Error", sphof.shared_ns)
 
     def resize(self, img, width, height):
         return cv2.resize(img, (width, height))
