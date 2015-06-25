@@ -19,6 +19,7 @@ You can find the API documentation as well as simple examples of the toolkit's u
    test1
    test2
    test3
+   survey
    sphof
 
 Indices and tables
