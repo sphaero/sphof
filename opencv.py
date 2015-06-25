@@ -29,7 +29,8 @@ class OpenCVActor(Actor):
         try:
             return sphof.shared_ns.pop(imgID)
         except KeyError:
-            print("Key Error", sphof.shared_ns)
+            print("Key Error", sphof.shared_ns.keys())
+            return None
 
     def resize(self, img, width, height):
         return cv2.resize(img, (width, height))
@@ -47,6 +48,9 @@ class OpenCVActor(Actor):
     def on_peer_signaled(self, peer, name, data):
         imgID = self.get_value("img_in")
         img = self.get_img_from_id(imgID)
+        if img == None:
+            print(data)
+            return
         img_s = self.resize(img, 120, 90)
         self.send_img(img_s, "img_out")
 
@@ -56,6 +60,9 @@ class InvertActor(OpenCVActor):
     def on_peer_signaled(self, peer, name, data):
         imgID = self.get_value("img_in")
         img = self.get_img_from_id(imgID)
+        if img == None:
+            print(data)
+            return
         img_s = self.resize(img, 120, 90)
         img_s = self.invert(img_s)
         self.send_img(img_s, "img_out")    
@@ -67,7 +74,8 @@ class InvertActor(OpenCVActor):
         try:
             return sphof.shared_ns.pop(hex(imgID))
         except KeyError:
-            print("Key Error", sphof.shared_ns)
+            print("Key Error", sphof.shared_ns.keys())
+            return None
 
 
 class BlurActor(OpenCVActor):
@@ -75,6 +83,9 @@ class BlurActor(OpenCVActor):
     def on_peer_signaled(self, peer, name, data):
         imgID = self.get_value("img_in")
         img = self.get_img_from_id(imgID)
+        if img == None:
+            print(data)
+            return
         img_s = self.resize(img, 120, 90)
         img_s = self.blur(img_s)
         self.send_img(img_s, "img_out")    
@@ -86,7 +97,8 @@ class BlurActor(OpenCVActor):
         try:
             return sphof.shared_ns.pop(str(imgID))
         except KeyError:
-            print("Key Error", sphof.shared_ns)
+            print("Key Error", sphof.shared_ns.keys())
+            return None
 
 
 class CVCapLeadActor(LeadActor):
