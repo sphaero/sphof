@@ -218,6 +218,7 @@ class PainterActor(Painter, Actor):
     .. code-block:: python
 
        from sphof import PainterActor
+       from random import randint
         
        class MyPainter(PainterActor):
 
@@ -288,15 +289,15 @@ class CanvasActor(Painter, LeadActor):
 
     example:
 
-    .. code-block:: python
+    ..  code-block:: python
 
         from sphof import CanvasActor
         
-        class MyPainter(CanvasActor):
+        class MyCanvas(CanvasActor):
 
             def setup(self):
                 self.painter_img = None
-                self.register_int("PaintingID", 0, "re") # create a sensor for image ids
+                self.register_int("PaintingID", 0, "rs") # create a sensor for image ids
                 # ... setup the painter here
 
             def on_peer_enter(self, peer, name, headers):

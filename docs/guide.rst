@@ -102,9 +102,11 @@ instances. Remember you can only have **one** LeadActor in your program!
 
 For example a simple LeadActor looks like this:
 
-.. code-block:: python
-   :linenos:
-   
+..  code-block:: python
+    :linenos:
+    
+    from sphof import LeadActor
+    
     class MyLeadActor(Actor):
 
         def setup(self):
