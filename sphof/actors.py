@@ -206,31 +206,31 @@ class Actor(ZOCP):
         """
         self._running = True
         t = time.time()
-        count = 1
+        count = 0
         try:
             reap_at = time.time() + 1/60.
             while self._running:
                 timeout = reap_at - time.time()
-                if timeout < 0:
+                if timeout < 0.01:
                     timeout = 0
+                    self.pre_update()
+                    self.update()
+                    self.post_update()
+
+                    self.pre_draw()
+                    self.draw()
+                    self.post_draw()
+                    count += 1
+
                 # set next interval
                 reap_at = time.time() + 1/60.
                 self.run_once(timeout * 1000)   # parse ZOCP queue
 
-                self.pre_update()
-                self.update()
-                self.post_update()
-
-                self.pre_draw()
-                self.draw()
-                self.post_draw()
- 
-                count += 1
                 # stats
-                if t + 60 < time.time():
+                if t + 10 < time.time():
                     print("{0}: fps: {1}".format(self.name(), count/(time.time() - t)))
                     t = time.time()
-                    count = 1
+                    count = 0
 
         except (KeyboardInterrupt, SystemExit) as e:
             logger.warning("Actor {0} finished. Exception:{1}".format(self.name(), e))
